@@ -13,19 +13,10 @@ public class BattleshipsPresenter {
         this.view = view;
 
         // Set up event handlers or other presenter logic
-        view.getSingleplayerButton().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                // Handle singleplayer button click
-            }
-        });
 
-        view.getMultiplayerButton().setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                // Handle multiplayer button click
-            }
-        });
+    }
+
+    public void setView(BattleshipsView view) {
     }
 
     // Add presenter logic if needed
