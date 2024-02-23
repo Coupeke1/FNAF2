@@ -6,16 +6,27 @@ import be.fnaf2.view.BattleshipsView;
 
 public class BattleshipsPresenter {
     private final BattleshipsModel model;
-    private BattleshipsView view;
+    private final BattleshipsView view;
 
     public BattleshipsPresenter(BattleshipsModel model, BattleshipsView view) {
         this.model = model;
         this.view = view;
-        // Voeg eventuele initialisatielogica hier toe
-    }
-    public void setView(BattleshipsView view) {
-        this.view = view;
+
+        // Set up event handlers or other presenter logic
+        view.getSingleplayerButton().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // Handle singleplayer button click
+            }
+        });
+
+        view.getMultiplayerButton().setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // Handle multiplayer button click
+            }
+        });
     }
 
-    // Voeg eventuele presentatielogica hier toe
+    // Add presenter logic if needed
 }
