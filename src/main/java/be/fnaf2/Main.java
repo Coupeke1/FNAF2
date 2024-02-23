@@ -4,11 +4,12 @@ package be.fnaf2;
 import be.fnaf2.model.BattleshipsModel;
 import be.fnaf2.presenter.BattleshipsPresenter;
 import be.fnaf2.view.BattleshipsView;
+import be.fnaf2.view.Gridview;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class main extends Application {
+public class Main extends Application {
 
     @Override
     public void start(Stage stage) {
@@ -31,3 +32,33 @@ public class main extends Application {
 
 
 }
+
+/*
+import be.fnaf2.view.Gridview;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+
+
+public class Main extends Application {
+
+    public static void main(String[] args) {
+        // Start Gridview als een afzonderlijke applicatie
+        launch(Gridview.class, args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        // Set up the primary stage
+        primaryStage.setTitle("MyApp");
+        primaryStage.setScene(new Scene(new VBox(), 800, 600));
+        primaryStage.show();
+    }
+}
+*/
+
+
+
+
