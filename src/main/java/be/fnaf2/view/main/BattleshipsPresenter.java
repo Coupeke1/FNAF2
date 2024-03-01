@@ -11,5 +11,5 @@ public class BattleshipsPresenter {
         this.view = new BattleshipsView(this);
     }
 
-    // Add methods to handle user interactions, update the model, and communicate with the view
+
 }

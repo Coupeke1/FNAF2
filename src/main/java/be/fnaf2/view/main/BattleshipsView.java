@@ -29,7 +29,7 @@ public class BattleshipsView extends VBox {
         multiplayerButton = new Button("Multiplayer");
 
         // Load the image
-        if (getClass().getResource("/FoxySecretgif.gif") != null) {
+        if (getClass().getResource("/BattleshipsLogo.jpg") != null) {
             imageView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/BattleshipsLogo.jpg"))));
         } else {
             System.out.println("Image not found");
@@ -64,9 +64,12 @@ public class BattleshipsView extends VBox {
         );
         Background background = new Background(backgroundImage);
         this.setBackground(background);
+
     }
 
     public BattleshipsPresenter getPresenter() {
         return presenter;
     }
+
+
 }
