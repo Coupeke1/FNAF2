@@ -1,8 +1,8 @@
-package be.fnaf2.presenter;
+package be.fnaf2.view.main;
 
 
 import be.fnaf2.model.BattleshipsModel;
-import be.fnaf2.view.BattleshipsView;
+import be.fnaf2.view.main.BattleshipsView;
 
 public class BattleshipsPresenter {
     private final BattleshipsModel model;

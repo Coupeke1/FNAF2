@@ -1,14 +1,11 @@
-package be.fnaf2.view;
+package be.fnaf2.view.main;
 
-import be.fnaf2.presenter.BattleshipsPresenter;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 
 import java.util.Objects;
@@ -33,7 +30,7 @@ public class BattleshipsView extends VBox {
 
         // Load the image
         if (getClass().getResource("/FoxySecretgif.gif") != null) {
-            imageView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/FoxySecretgif.gif"))));
+            imageView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/BattleshipsLogo.jpg"))));
         } else {
             System.out.println("Image not found");
             imageView = new ImageView(); // or use a default image
@@ -46,10 +43,8 @@ public class BattleshipsView extends VBox {
         singleplayerButton.setMinWidth(Button.USE_PREF_SIZE);
         multiplayerButton.setMinWidth(Button.USE_PREF_SIZE);
 
-        imageView.setFitHeight(156.0);
-        imageView.setPreserveRatio(true);
-        imageView.setSmooth(true);
-        imageView.setPickOnBounds(true);
+        imageView.setFitWidth(Double.MAX_VALUE); // Set the width to fill the VBox
+        imageView.setPreserveRatio(false); // Allow the image to stretch
 
         HBox buttonsBox = new HBox(singleplayerButton, multiplayerButton);
         buttonsBox.setAlignment(Pos.CENTER);
@@ -59,7 +54,16 @@ public class BattleshipsView extends VBox {
 
         this.setAlignment(Pos.CENTER); // Center the content vertically
         this.setSpacing(10.0); // Add spacing between elements if needed
-        this.getChildren().addAll(titleLabel, imageView, buttonsBox);
+        this.getChildren().addAll(titleLabel, buttonsBox);
+
+        // Set the background image
+        BackgroundImage backgroundImage = new BackgroundImage(
+                new Image(Objects.requireNonNull(getClass().getResourceAsStream("/BattleshipsLogo.jpg"))),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT, new BackgroundSize(1.0, 1.0, true, true, false, false)
+        );
+        Background background = new Background(backgroundImage);
+        this.setBackground(background);
     }
 
     public BattleshipsPresenter getPresenter() {

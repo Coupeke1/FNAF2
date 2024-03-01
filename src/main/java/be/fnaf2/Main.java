@@ -2,9 +2,8 @@ package be.fnaf2;
 
 
 import be.fnaf2.model.BattleshipsModel;
-import be.fnaf2.presenter.BattleshipsPresenter;
-import be.fnaf2.view.BattleshipsView;
-import be.fnaf2.view.Gridview;
+import be.fnaf2.view.main.BattleshipsPresenter;
+import be.fnaf2.view.main.BattleshipsView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -17,7 +16,7 @@ public class Main extends Application {
         BattleshipsView view = new BattleshipsView(new BattleshipsPresenter(model, null));
 
         // Geef de Battleshipdemo.view door aan de Battleshipdemo.presenter
-        BattleshipsPresenter presenter = (BattleshipsPresenter) view.getPresenter();
+        BattleshipsPresenter presenter = view.getPresenter();
         presenter.setView(view);
 
         Scene scene = new Scene(view, 640, 400);

@@ -5,4 +5,5 @@ module be.fnaf2 {
 
     opens be.fnaf2 to javafx.fxml;
     exports be.fnaf2;
+    exports be.fnaf2.view.main to javafx.graphics;
 }
