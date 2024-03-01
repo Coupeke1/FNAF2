@@ -1,6 +1,6 @@
 package be.fnaf2;
 
-
+/*
 import be.fnaf2.model.BattleshipsModel;
 import be.fnaf2.view.main.BattleshipsPresenter;
 import be.fnaf2.view.main.BattleshipsView;
@@ -31,32 +31,50 @@ public class Main extends Application {
 
 
 }
+*/
 
-/*
-import be.fnaf2.view.Gridview;
+// Main.java
+import be.fnaf2.view.Splash.SplashView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-
+import javafx.stage.StageStyle;
 
 public class Main extends Application {
 
     public static void main(String[] args) {
-        // Start Gridview als een afzonderlijke applicatie
-        launch(Gridview.class, args);
+        launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) {
-        // Set up the primary stage
+        // Show the splash screen
+        showSplashScreen();
+
+        // Simulate some loading tasks (replace this with your actual loading tasks)
+        try {
+            Thread.sleep(3000); // Simulating a delay of 3 seconds
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Continue with your main window setup
         primaryStage.setTitle("MyApp");
         primaryStage.setScene(new Scene(new VBox(), 800, 600));
         primaryStage.show();
     }
+
+    private void showSplashScreen() {
+        Stage splashStage = new Stage();
+        SplashView splashView = new SplashView();
+        Scene scene = new Scene(splashView.getParent(), 640, 480);
+        splashStage.setScene(scene);
+        splashStage.initStyle(StageStyle.TRANSPARENT);
+        splashStage.centerOnScreen();
+        splashStage.showAndWait();
+    }
 }
-*/
 
 
 
