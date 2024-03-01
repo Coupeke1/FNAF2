@@ -1,21 +1,15 @@
 package be.fnaf2.view.main;
 
-
 import be.fnaf2.model.BattleshipsModel;
-import be.fnaf2.view.main.BattleshipsView;
 
 public class BattleshipsPresenter {
     private final BattleshipsModel model;
     private final BattleshipsView view;
 
-    public BattleshipsPresenter(BattleshipsModel model, BattleshipsView view) {
+    public BattleshipsPresenter(BattleshipsModel model) {
         this.model = model;
-        this.view = view;
-
-
+        this.view = new BattleshipsView(this);
     }
 
-    public void setView(BattleshipsView view) {
-    }
-
+    // Add methods to handle user interactions, update the model, and communicate with the view
 }

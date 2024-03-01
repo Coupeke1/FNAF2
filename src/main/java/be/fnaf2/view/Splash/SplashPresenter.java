@@ -29,7 +29,7 @@ public class SplashPresenter extends Application {
     private void simulateLoadingTasks() throws InterruptedException {
 
         // Simulate a loading task by sleeping for a short time
-        Thread.sleep(500);
+        Thread.sleep(300);
     }
 
 
