@@ -31,6 +31,7 @@ public class Gridview extends Application {
         primaryStage.show();
     }
 
+
     // Definieer de Cell klasse
     private class Cell extends Rectangle {
         private int row;
@@ -56,6 +57,5 @@ public class Gridview extends Application {
             });
         }
     }
-
 
 }
