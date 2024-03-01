@@ -12,12 +12,10 @@ public class BattleshipsPresenter {
         this.model = model;
         this.view = view;
 
-        // Set up event handlers or other presenter logic
 
     }
 
     public void setView(BattleshipsView view) {
     }
 
-    // Add presenter logic if needed
 }
