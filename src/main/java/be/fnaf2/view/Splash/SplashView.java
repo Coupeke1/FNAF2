@@ -45,6 +45,7 @@ public class SplashView {
 
         SplashView splashView = new SplashView();
         Scene scene = new Scene(splashView.getParent(), 800, 600);
+        Duration duration = Duration.seconds(0.5);
         splashStage.setScene(scene);
         splashStage.initStyle(StageStyle.TRANSPARENT);
         splashStage.centerOnScreen();

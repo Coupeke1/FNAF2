@@ -18,10 +18,11 @@ public class SplashPresenter {
         // Close the splash screen after the specified duration
         Timeline timeline = new Timeline(
                 new KeyFrame(splashDuration, event -> {
-                    splashStage.close();
 
                     Stage primaryStage = new Stage();
                     SplashView.showBattleshipsView(primaryStage);
+                    splashStage.close();
+
                 })
         );
         timeline.play();
