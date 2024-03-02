@@ -1,3 +1,4 @@
+// BattleshipsPresenter.java
 package be.fnaf2.view.main;
 
 import be.fnaf2.model.BattleshipsModel;
@@ -10,6 +11,4 @@ public class BattleshipsPresenter {
         this.model = model;
         this.view = new BattleshipsView(this);
     }
-
-
 }

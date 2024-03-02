@@ -1,14 +1,29 @@
+// SplashPresenter.java
 package be.fnaf2.view.Splash;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
 public class SplashPresenter {
-    private SplashView splashView;
+    private final Stage splashStage;
 
-    public SplashPresenter(SplashView splashView) {
-        this.splashView = splashView;
-
+    public SplashPresenter(Stage splashStage, Duration splashDuration) {
+        this.splashStage = splashStage;
+        addEventHandler(splashDuration);
     }
-    private void addEventHandler(){
 
+    private void addEventHandler(Duration splashDuration) {
+        // Close the splash screen after the specified duration
+        Timeline timeline = new Timeline(
+                new KeyFrame(splashDuration, event -> {
+                    splashStage.close();
+
+                    Stage primaryStage = new Stage();
+                    SplashView.showBattleshipsView(primaryStage);
+                })
+        );
+        timeline.play();
     }
 }
-
