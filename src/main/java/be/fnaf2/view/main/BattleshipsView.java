@@ -3,6 +3,7 @@ package be.fnaf2.view.main;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 
@@ -38,7 +39,15 @@ public class BattleshipsView extends VBox {
         this.setAlignment(Pos.CENTER);
         this.setSpacing(10.0);
         this.getChildren().addAll(titleLabel, buttonsBox);
+        Image backgroundImage = new Image(getClass().getResourceAsStream("/BattleshipsLogo.jpg"));
+        BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, false, false);
+        BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+        this.setBackground(new Background(background));
+
+
+
     }
+
 
 
     public Button getSingleplayerButton() {

@@ -28,9 +28,6 @@ public class BattleshipsPresenter {
         primaryStage.show();
     }
 
-
-    // ... (existing code)
-
     private void initialize() {
         // Set event handlers
         view.getSingleplayerButton().setOnAction(event -> showConfirmationAlert("Singleplayer"));
