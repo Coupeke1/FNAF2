@@ -1,23 +1,21 @@
-package be.fnaf2.view;
+package be.fnaf2.view.gridplacement;
 
-import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class Gridview extends Application {
+public class Gridview {
 
     private static final int NUM_ROWS = 10;
     private static final int NUM_COLS = 10;
     private static final int CELL_SIZE = 50;
 
-    @Override
-    public void start(Stage primaryStage) {
+    public void showGrid(Stage primaryStage) {
         GridPane grid = new GridPane();
 
-        // Maak cellen en voeg ze toe aan het raster
+        // Create cells and add them to the grid
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
                 Cell cell = new Cell(row, col);
@@ -31,8 +29,7 @@ public class Gridview extends Application {
         primaryStage.show();
     }
 
-
-    // Definieer de Cell klasse
+    // Define the Cell class
     private class Cell extends Rectangle {
         private int row;
         private int col;
@@ -45,7 +42,7 @@ public class Gridview extends Application {
             setFill(Color.WHITE);
             setStroke(Color.BLACK);
 
-            // Voeg event handler toe voor muisklik
+            // Add event handler for mouse click
             setOnMouseClicked(event -> {
                 if (!clicked) {
                     setFill(Color.GRAY);
@@ -57,5 +54,4 @@ public class Gridview extends Application {
             });
         }
     }
-
 }
