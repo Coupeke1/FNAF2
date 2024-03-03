@@ -53,15 +53,4 @@ public class SplashView {
         SplashPresenter presenter = new SplashPresenter(splashStage,duration);
     }
 
-    // Static method to show BattleshipsView
-    public static void showBattleshipsView(Stage primaryStage) {
-        BattleshipsPresenter battleshipsPresenter = new BattleshipsPresenter(null);
-        BattleshipsView battleshipsView = new BattleshipsView(battleshipsPresenter);
-
-        Scene scene = new Scene(battleshipsView, 800, 600);
-
-        primaryStage.setTitle("Battleships");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-    }
 }

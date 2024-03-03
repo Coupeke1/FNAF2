@@ -1,6 +1,7 @@
 // SplashPresenter.java
 package be.fnaf2.view.Splash;
 
+import be.fnaf2.view.main.BattleshipsPresenter;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.stage.Stage;
@@ -20,7 +21,7 @@ public class SplashPresenter {
                 new KeyFrame(splashDuration, event -> {
 
                     Stage primaryStage = new Stage();
-                    SplashView.showBattleshipsView(primaryStage);
+                    BattleshipsPresenter.showBattleshipsView(primaryStage);
                     splashStage.close();
 
                 })
