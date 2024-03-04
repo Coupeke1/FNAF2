@@ -1,5 +1,6 @@
-// SplashPresenter.java
 package be.fnaf2.view.Splash;
+
+// SplashPresenter.java
 
 import be.fnaf2.view.main.BattleshipsPresenter;
 import javafx.animation.KeyFrame;
