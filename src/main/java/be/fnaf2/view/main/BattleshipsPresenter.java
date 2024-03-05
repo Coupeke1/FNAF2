@@ -1,6 +1,8 @@
+// BattleshipsPresenter.java
 package be.fnaf2.view.main;
 
-import be.fnaf2.view.gridplacement.Gridview;
+import be.fnaf2.settings.SettingsPresenter;
+import be.fnaf2.settings.SettingsView;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -17,14 +19,12 @@ public class BattleshipsPresenter {
     }
 
     public static void showBattleshipsView(Stage primaryStage) {
-        BattleshipsView battleshipsView = new BattleshipsView();
+        BattleshipsView battleshipsView = new BattleshipsView(primaryStage);
 
         BattleshipsPresenter battleshipsPresenter = new BattleshipsPresenter(battleshipsView, primaryStage);
 
-        Scene scene = new Scene(battleshipsView, 800, 600);
-
         primaryStage.setTitle("Battleships");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(new Scene(battleshipsView, 800, 600)); // Set the scene directly here
         primaryStage.show();
     }
 
@@ -32,6 +32,7 @@ public class BattleshipsPresenter {
         // Set event handlers
         view.getSingleplayerButton().setOnAction(event -> showConfirmationAlert("Singleplayer"));
         view.getMultiplayerButton().setOnAction(event -> showConfirmationAlert("Multiplayer"));
+        view.getSettingButton().setOnAction(event -> showConfirmationAlert("Settings"));
     }
 
     private void showConfirmationAlert(String gameMode) {
@@ -41,15 +42,21 @@ public class BattleshipsPresenter {
         alert.setContentText("Are you sure you want to switch to " + gameMode + " mode?");
 
         alert.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.OK) {
-                showGridPlacementView();
+            if (gameMode.equalsIgnoreCase("settings")) {
+                showSettingsView();
+            } else {
+                if (response == ButtonType.OK) {
+                    showGridPlacementView();
+                }
             }
         });
     }
 
-
     private void showGridPlacementView() {
-        Gridview gridview = new Gridview();
-        gridview.showGrid(primaryStage);
+        // Implement your logic to show the grid placement view
+    }
+
+    private void showSettingsView() {
+        SettingsPresenter.showSettingsView(primaryStage);
     }
 }

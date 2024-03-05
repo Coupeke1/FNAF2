@@ -26,7 +26,7 @@ public class SplashPresenter {
                     splashStage.close();
 
                 })
-        );// bent is suckt
+        );
         timeline.play();
     }
 }

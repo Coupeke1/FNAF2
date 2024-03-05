@@ -1,54 +1,65 @@
 package be.fnaf2.view.main;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
-public class BattleshipsView extends VBox {
+import java.util.Objects;
 
+public class BattleshipsView extends GridPane {
 
-    private Label titleLabel;
     private Button singleplayerButton;
     private Button multiplayerButton;
+    private Button settingButton;
+    private Stage primaryStage;
 
-    public BattleshipsView() {
+    public BattleshipsView(Stage primaryStage) {
+        this.primaryStage = primaryStage;
         initializeView();
     }
 
     private void initializeView() {
-        titleLabel = new Label("BATTLESHIPS");
+        Image settingsImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/SettingsKnop.png")));
+        ImageView settingImageView = new ImageView(settingsImage);
+        settingImageView.setFitHeight(20);
+        settingImageView.setPreserveRatio(true);
+
         singleplayerButton = new Button("Singleplayer");
         multiplayerButton = new Button("Multiplayer");
+        settingButton = new Button();
+        settingButton.setGraphic(settingImageView);
+        settingButton.setPrefSize(30, 30);
+        settingButton.setStyle("-fx-background-color: grey;");
 
-        titleLabel.setAlignment(Pos.CENTER);
-        titleLabel.setStyle("-fx-text-fill: #9f9f9f;");
-        titleLabel.setFont(new Font(18.0));
-
+        singleplayerButton.setStyle("-fx-border-color: red;");
+        multiplayerButton.setStyle("-fx-border-color: blue;");
+        settingButton.setStyle("-fx-border-color: green;");
         singleplayerButton.setMinWidth(Button.USE_PREF_SIZE);
         multiplayerButton.setMinWidth(Button.USE_PREF_SIZE);
 
-        HBox buttonsBox = new HBox(singleplayerButton, multiplayerButton);
-        buttonsBox.setAlignment(Pos.CENTER);
-        buttonsBox.setSpacing(10.0);
-
-        HBox.setHgrow(buttonsBox, Priority.ALWAYS);
-
+        this.setHgap(10.0);
+        this.setVgap(10.0);
         this.setAlignment(Pos.CENTER);
-        this.setSpacing(10.0);
-        this.getChildren().addAll(titleLabel, buttonsBox);
-        Image backgroundImage = new Image(getClass().getResourceAsStream("/BattleshipsLogo.jpg"));
+        this.setPadding(new Insets(10.0));
+
+        this.add(singleplayerButton, 0, 0);
+        this.add(multiplayerButton, 1, 0);
+
+        // Voeg lege ruimte toe om de knop rechtsonder te plaatsen
+        this.add(new Region(), 0, 1);
+        this.add(new Region(), 1, 1);
+
+        this.add(settingButton, 1, 1);
+
+        Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/BattleshipsLogo.jpg")));
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, false, false);
         BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
         this.setBackground(new Background(background));
-
-
-
     }
-
-
 
     public Button getSingleplayerButton() {
         return singleplayerButton;
@@ -56,5 +67,9 @@ public class BattleshipsView extends VBox {
 
     public Button getMultiplayerButton() {
         return multiplayerButton;
+    }
+
+    public Button getSettingButton() {
+        return settingButton;
     }
 }
