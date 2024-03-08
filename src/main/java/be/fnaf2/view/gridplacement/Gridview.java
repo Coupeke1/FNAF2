@@ -17,6 +17,7 @@ public class Gridview {
     private static final int CELL_SIZE = 50;
 
     private ChoiceBox<ShipType> shipTypeChoiceBox;
+    private int[] remainingShips; // Track the remaining ships for each type
 
     public void showGrid(Stage primaryStage) {
         GridPane grid = new GridPane();
@@ -28,6 +29,10 @@ public class Gridview {
                 grid.add(cell, col, row);
             }
         }
+
+        // Initialize the array to track remaining ships
+        remainingShips = new int[ShipType.values().length];
+        resetRemainingShips();
 
         // Create a ChoiceBox for ShipType selection
         ObservableList<ShipType> shipTypeOptions = FXCollections.observableArrayList(ShipType.values());
@@ -50,11 +55,18 @@ public class Gridview {
         primaryStage.show();
     }
 
+    // Reset the remaining ships array to the initial values
+    private void resetRemainingShips() {
+        int i = 0;
+        for (ShipType type : ShipType.values()) {
+            remainingShips[i++] = type.getNumShips();
+        }
+    }
+
     // Define the Cell class
     private class Cell extends Rectangle {
         private int row;
         private int col;
-        private boolean clicked = false;
         private GridPane grid;
 
         public Cell(GridPane grid, int row, int col) {
@@ -76,12 +88,22 @@ public class Gridview {
 
         private void colorShip(ShipType shipType) {
             int shipLength = shipType.getShipLength();
+            int typeIndex = shipType.ordinal();
 
-            // Check if there is enough space to color the entire ship
-            if (col + shipLength <= NUM_COLS) {
-                // Color the cells based on the ship's length
-                for (int i = 0; i < shipLength; i++) {
-                    grid.add(createColoredCell(), col + i, row);
+            // Check if there are remaining ships of the selected type
+            if (remainingShips[typeIndex] > 0) {
+                // Check if there is enough space to color the entire ship
+                if (col + shipLength <= NUM_COLS) {
+                    // Color the cells based on the ship's length
+                    for (int i = 0; i < shipLength; i++) {
+                        grid.add(createColoredCell(), col + i, row);
+                    }
+                    remainingShips[typeIndex]--; // Reduce the number of available ships for the selected type
+                    if (remainingShips[typeIndex] == 0) {
+                        // Disable ship selection if all ships of this type are placed
+                        shipTypeChoiceBox.getItems().remove(shipType);
+                        shipTypeChoiceBox.setValue(null);
+                    }
                 }
             }
         }
