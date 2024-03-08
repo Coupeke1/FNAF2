@@ -1,11 +1,12 @@
 package be.fnaf2.view.gridplacement;
+
 public enum ShipType {
     SUBMARINE(2, 3),
-    CRUISER(2   , 5),
+    CRUISER(2, 5),
     DESTROYER(1, 6),
     BATTLESHIP(1, 8);
 
-    private final int numShips;
+    private int numShips;
     private final int shipLength;
 
     ShipType(int numShips, int shipLength) {
@@ -19,6 +20,12 @@ public enum ShipType {
 
     public int getNumShips() {
         return numShips;
+    }
+
+    public void decrementNumShips() {
+        if (numShips > 0) {
+            numShips--;
+        }
     }
 
     public static int lengthAllShips() {
