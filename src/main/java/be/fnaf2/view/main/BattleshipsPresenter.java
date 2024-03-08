@@ -38,23 +38,22 @@
                 if (view.getSingleplayerButton() != null) {
                     view.getSingleplayerButton().setOnAction(event -> showConfirmationAlert("Singleplayer"));
                 } else {
-                    throw new ButtonInitializationException("Singleplayer Button not initialized properly");
+                    throw new ButtonInitializationException("Singleplayer Button Error");
                 }
 
                 if (view.getMultiplayerButton() != null) {
                     view.getMultiplayerButton().setOnAction(event -> showConfirmationAlert("Multiplayer"));
                 } else {
-                    throw new ButtonInitializationException("Multiplayer Button not initialized properly");
+                    throw new ButtonInitializationException("Multiplayer Button Error");
                 }
 
                 if (view.getSettingButton() != null) {
                     view.getSettingButton().setOnAction(event -> showConfirmationAlert("Settings"));
                 } else {
-                    throw new ButtonInitializationException("Settings Button not initialized properly");
+                    throw new ButtonInitializationException("Settings Button Error");
                 }
             } catch (ButtonInitializationException e) {
                 e.printStackTrace();
-                // Handle the exception as per your application's requirement
             }
         }
 
