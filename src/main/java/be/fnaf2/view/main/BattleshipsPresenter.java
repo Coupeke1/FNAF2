@@ -1,6 +1,7 @@
     // BattleshipsPresenter.java
     package be.fnaf2.view.main;
 
+    import be.fnaf2.Exceptions.ButtonInitializationException;
     import be.fnaf2.model.GridModel;
     import be.fnaf2.settings.SettingsPresenter;
     import be.fnaf2.settings.SettingsView;
@@ -33,9 +34,28 @@
 
         private void initialize() {
             // Set event handlers
-            view.getSingleplayerButton().setOnAction(event -> showConfirmationAlert("Singleplayer"));
-            view.getMultiplayerButton().setOnAction(event -> showConfirmationAlert("Multiplayer"));
-            view.getSettingButton().setOnAction(event -> showConfirmationAlert("Settings"));
+            try {
+                if (view.getSingleplayerButton() != null) {
+                    view.getSingleplayerButton().setOnAction(event -> showConfirmationAlert("Singleplayer"));
+                } else {
+                    throw new ButtonInitializationException("Singleplayer Button not initialized properly");
+                }
+
+                if (view.getMultiplayerButton() != null) {
+                    view.getMultiplayerButton().setOnAction(event -> showConfirmationAlert("Multiplayer"));
+                } else {
+                    throw new ButtonInitializationException("Multiplayer Button not initialized properly");
+                }
+
+                if (view.getSettingButton() != null) {
+                    view.getSettingButton().setOnAction(event -> showConfirmationAlert("Settings"));
+                } else {
+                    throw new ButtonInitializationException("Settings Button not initialized properly");
+                }
+            } catch (ButtonInitializationException e) {
+                e.printStackTrace();
+                // Handle the exception as per your application's requirement
+            }
         }
 
         private void showConfirmationAlert(String gameMode) {
