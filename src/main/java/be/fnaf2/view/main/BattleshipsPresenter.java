@@ -4,7 +4,6 @@
     import be.fnaf2.Exceptions.ButtonInitializationException;
     import be.fnaf2.model.GridModel;
     import be.fnaf2.settings.SettingsPresenter;
-    import be.fnaf2.settings.SettingsView;
     import be.fnaf2.view.gridplacement.GridPresenter;
     import be.fnaf2.view.gridplacement.Gridview;
     import javafx.scene.Scene;

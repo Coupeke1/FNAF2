@@ -2,6 +2,7 @@ package be.fnaf2.view.gridplacement;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.GridPane;
@@ -15,165 +16,99 @@ public class Gridview {
     private static final int NUM_ROWS = 10;
     private static final int NUM_COLS = 10;
     private static final int CELL_SIZE = 50;
-
+    private GridPane grid = new GridPane();
     private ChoiceBox<ShipType> shipTypeChoiceBox;
 
-    public void showGrid(Stage primaryStage) {
-        GridPane grid = new GridPane();
-
-        // Clear the grid (remove all existing nodes)
-        grid.getChildren().clear();
-
-        // Create cells and add them to the grid
+    public Gridview() {
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
-                Cell cell = new Cell(grid, row, col);
+                Cell cell = new Cell(col, row, this);
                 grid.add(cell, col, row);
-
-                // Debug statement
-                System.out.println("Cell added at (" + col + ", " + row + ")");
             }
         }
+    }
 
-        // Create a ChoiceBox for ShipType selection
+    public void showGrid(Stage primaryStage) {
         ObservableList<ShipType> shipTypeOptions = FXCollections.observableArrayList(ShipType.values());
         shipTypeChoiceBox = new ChoiceBox<>(shipTypeOptions);
-        shipTypeChoiceBox.setValue(ShipType.SUBMARINE); // Set default value
+        shipTypeChoiceBox.setValue(ShipType.SUBMARINE);
 
-        // Add event handler for ChoiceBox selection
-        shipTypeChoiceBox.setOnAction(event -> {
-            ShipType selectedShipType = shipTypeChoiceBox.getValue();
-            // You can do something with the selected ship type if needed
-            System.out.println("Selected ShipType: " + selectedShipType);
-        });
-
-        // Create a VBox to hold the ChoiceBox and the grid
         VBox vbox = new VBox(shipTypeChoiceBox, grid);
-
         Scene scene = new Scene(vbox, NUM_COLS * CELL_SIZE, (NUM_ROWS + 1) * CELL_SIZE);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Interactive Grid");
         primaryStage.show();
     }
 
-    private class Cell extends Rectangle {
-        private int row;
-        private int col;
-        private boolean clicked = false;
-        private GridPane grid;
-
-        public Cell(GridPane grid, int row, int col) {
-            super(CELL_SIZE, CELL_SIZE);
-            this.row = row;
-            this.col = col;
-            this.grid = grid;
-            setFill(Color.WHITE);
-            setStroke(Color.BLACK);
-
-            // Add event handler for mouse click
-            setOnMouseClicked(event -> {
-                ShipType selectedShipType = shipTypeChoiceBox.getValue();
-                if (selectedShipType != null) {
-                    colorShip(selectedShipType);
-
-                    // Debug statement
-                    System.out.println("Cell clicked at (" + col + ", " + row + ")");
-                }
-                event.consume(); // Consume the event to prevent it from being handled by other nodes
-            });
-        }
-
-        private void colorShip(ShipType shipType) {
-            int shipLength = shipType.getShipLength();
-
-            // Check if there is enough space to color the entire ship and no overlapping ships
-            if (col + shipLength <= NUM_COLS && !shipOverlaps(col, shipLength)) {
-                // Color the cells based on the ship's length
-                for (int i = 0; i < shipLength; i++) {
-                    int targetCol = col + i;
-                    int targetRow = row;
-
-                    if (isValidCell(targetCol, targetRow) && !isCellOccupied(targetCol, targetRow)) {
-                        Rectangle coloredCell = createColoredCell();
-                        grid.add(coloredCell, targetCol, targetRow);
-                    }
-                }
-
-                // Add borders around the ship
-                addShipBorders(shipLength);
-
-                // Reduce the number of available ships
-                shipType.decrementNumShips();
-
-                // Disable ship selection if all ships of this type are placed
-                if (shipType.getNumShips() == 0) {
-                    shipTypeChoiceBox.getItems().remove(shipType);
-                    shipTypeChoiceBox.setValue(null);
-                }
-
-                // Remove the old cell
-                grid.getChildren().remove(this);
-            }
-        }
-
-        private boolean shipOverlaps(int startCol, int shipLength) {
-            // Check if the cells to be colored overlap with existing ships
-            for (int i = -1; i <= shipLength; i++) {
-                int targetCol = col + i;
-
-                for (int j = -1; j <= 1; j++) {
-                    int targetRow = row + j;
-
-                    if (isValidCell(targetCol, targetRow) && isCellOccupied(targetCol, targetRow)) {
-                        return true;
-                    }
-                }
-            }
+    public boolean placeShip(ShipType shipType, int x, int y) {
+        if (shipType.getAvailable() <= 0) {
+            System.out.println("Geen schepen van dit type meer beschikbaar.");
             return false;
         }
 
-        private boolean isValidCell(int col, int row) {
-            return col >= 0 && col < NUM_COLS && row >= 0 && row < NUM_ROWS;
-        }
+        int length = shipType.getLength();
+        if (x + length > NUM_COLS) return false;
 
-        private boolean isCellOccupied(int col, int row) {
-            return grid.getChildren().stream()
-                    .anyMatch(node -> GridPane.getColumnIndex(node) != null &&
-                            GridPane.getRowIndex(node) != null &&
-                            GridPane.getColumnIndex(node) == col &&
-                            GridPane.getRowIndex(node) == row);
-        }
-
-        private void addShipBorders(int shipLength) {
-            for (int i = -1; i <= shipLength; i++) {
-                int targetCol = col + i;
-
-                if (targetCol >= 0 && targetCol < NUM_COLS) {
-                    Rectangle upperBorder = createColoredCell();
-                    upperBorder.setFill(Color.RED);
-                    grid.add(upperBorder, targetCol, row - 1); // Add upper border
-
-                    Rectangle lowerBorder = createColoredCell();
-                    lowerBorder.setFill(Color.RED);
-                    grid.add(lowerBorder, targetCol, row + 1); // Add lower border
-                }
-
-                if (i == -1 || i == shipLength) {
-                    Rectangle leftBorder = createColoredCell();
-                    leftBorder.setFill(Color.RED);
-                    grid.add(leftBorder, col - 1, row); // Add left border
-
-                    Rectangle rightBorder = createColoredCell();
-                    rightBorder.setFill(Color.RED);
-                    grid.add(rightBorder, col + shipLength, row); // Add right border
-                }
+        for (int i = x; i < x + length; i++) {
+            Cell cell = getCell(i, y);
+            if (cell != null && cell.ship == null) {
+                cell.setFill(Color.GREEN);
+                cell.ship = shipType;
+            } else {
+                return false;
             }
         }
 
-        private Rectangle createColoredCell() {
-            Rectangle coloredCell = new Rectangle(CELL_SIZE, CELL_SIZE);
-            coloredCell.setFill(Color.GREEN); // Set the color where ships are placed to green
-            return coloredCell;
+        shipType.decrementAvailable();
+        updateChoiceBox();
+        return true;
+    }
+
+    public Cell getCell(int x, int y) {
+        for (Node node : grid.getChildren()) {
+            if (GridPane.getColumnIndex(node) == x && GridPane.getRowIndex(node) == y && node instanceof Cell) {
+                return (Cell) node;
+            }
+        }
+        return null;
+    }
+
+    private void updateChoiceBox() {
+        ObservableList<ShipType> updatedShipTypes = FXCollections.observableArrayList();
+        for (ShipType shipType : ShipType.values()) {
+            if (shipType.getAvailable() > 0) {
+                updatedShipTypes.add(shipType);
+            }
+        }
+        shipTypeChoiceBox.setItems(updatedShipTypes);
+        if (!updatedShipTypes.isEmpty()) {
+            shipTypeChoiceBox.setValue(updatedShipTypes.get(0));
+        } else {
+            shipTypeChoiceBox.setValue(null);
+        }
+    }
+
+    public class Cell extends Rectangle {
+        public int x, y;
+        public ShipType ship = null;
+
+        public Cell(int x, int y, Gridview gridview) {
+            super(CELL_SIZE, CELL_SIZE, Color.LIGHTGRAY);
+            setStroke(Color.BLACK);
+            this.x = x;
+            this.y = y;
+
+            setOnMouseClicked(event -> {
+                ShipType selectedShipType = shipTypeChoiceBox.getValue();
+                if (selectedShipType != null && selectedShipType.getAvailable() > 0) {
+                    boolean placed = gridview.placeShip(selectedShipType, x, y);
+                    if (placed) {
+                        System.out.println("Schip geplaatst: " + selectedShipType + " op (" + x + ", " + y + ")");
+                    } else {
+                        System.out.println("Kan schip niet plaatsen op (" + x + ", " + y + ")");
+                    }
+                }
+            });
         }
     }
 }

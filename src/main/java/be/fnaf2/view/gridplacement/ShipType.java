@@ -1,51 +1,30 @@
 package be.fnaf2.view.gridplacement;
 
 public enum ShipType {
-    SUBMARINE(2, 3),
-    CRUISER(2, 5),
-    DESTROYER(1, 6),
-    BATTLESHIP(1, 8);
+    SUBMARINE(3, 2),
+    CRUISER(5, 2),
+    DESTROYER(6, 1),
+    BATTLESHIP(8, 1);
 
-    private int numShips;
-    private final int shipLength;
+    private final int length;
+    private int available; // Aantal beschikbare schepen van dit type
 
-    ShipType(int numShips, int shipLength) {
-        this.numShips = numShips;
-        this.shipLength = shipLength;
+    ShipType(int length, int available) {
+        this.length = length;
+        this.available = available;
     }
 
-    public int getShipLength() {
-        return shipLength;
+    public int getLength() {
+        return length;
     }
 
-    public int getNumShips() {
-        return numShips;
+    public int getAvailable() {
+        return available;
     }
 
-    public void decrementNumShips() {
-        if (numShips > 0) {
-            numShips--;
+    public void decrementAvailable() {
+        if (this.available > 0) {
+            this.available--;
         }
-    }
-
-    public static int lengthAllShips() {
-        int sum = 0;
-        for (ShipType type : ShipType.values()) sum += type.shipLength * type.numShips;
-        return sum;
-    }
-
-    public static int sizeAllShips() {
-        int sum = 0;
-        for (ShipType type : ShipType.values()) sum += type.numShips;
-        return sum;
-    }
-
-    public static String toShipName(ShipType type) {
-        return switch (type) {
-            case BATTLESHIP -> "Battleship";
-            case DESTROYER -> "Destroyer";
-            case CRUISER -> "Cruiser";
-            case SUBMARINE -> "Submarine";
-        };
     }
 }
