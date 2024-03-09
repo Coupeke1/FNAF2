@@ -2,17 +2,23 @@ package be.fnaf2.view.gridplacement;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Gridview {
 
+    private boolean enemy = false;
     private static final int NUM_ROWS = 10;
     private static final int NUM_COLS = 10;
     private static final int CELL_SIZE = 50;
@@ -37,50 +43,137 @@ public class Gridview {
         Scene scene = new Scene(vbox, NUM_COLS * CELL_SIZE, (NUM_ROWS + 1) * CELL_SIZE);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Interactive Grid");
+
+        scene.setOnMouseClicked(event -> {
+            ShipType selectedShipType = shipTypeChoiceBox.getValue();
+            int x = (int) (event.getX() / CELL_SIZE);
+            int y = (int) (event.getY() / CELL_SIZE);
+
+            if (event.getButton() == MouseButton.PRIMARY) {
+                // Left-click: Place ship horizontally
+                placeShip(selectedShipType, x, y, true);
+            } else if (event.getButton() == MouseButton.SECONDARY) {
+                // Right-click: Place ship vertically
+                placeShip(selectedShipType, x, y, false);
+            }
+        });
+
         primaryStage.show();
     }
 
-    public boolean placeShip(ShipType shipType, int x, int y) {
-        if (shipType.getAvailable() <= 0 || !canPlaceShip(shipType, x, y)) {
-            System.out.println("Cannot place ship: no ships available or location is invalid.");
-            return false;
+    private void placeShip(ShipType shipType, int x, int y, boolean horizontal) {
+        try {
+            if (canPlaceShip(shipType, x, y, horizontal)) {
+                int length = shipType.getLength();
+
+                if (horizontal) {
+                    for (int i = x; i < x + length; i++) {
+                        Cell cell = getCell(i, y);
+                        cell.ship = shipType;
+                        if (!enemy) {
+                            cell.setFill(Color.WHITE);
+                            cell.setStroke(Color.GREEN);
+                        }
+                    }
+                } else {
+                    for (int i = y; i < y + length; i++) {
+                        Cell cell = getCell(x, i);
+                        cell.ship = shipType;
+                        if (!enemy) {
+                            cell.setFill(Color.WHITE);
+                            cell.setStroke(Color.GREEN);
+                        }
+                    }
+                }
+
+                shipType.decrementAvailable();
+                updateChoiceBox();
+
+                // Kies automatisch een ander shiptype als het huidige niet meer beschikbaar is
+                ShipType nextShipType = getNextAvailableShipType();
+                if (nextShipType != null) {
+                    shipTypeChoiceBox.setValue(nextShipType);
+                }
+            } else {
+                System.out.println("Kan schip niet plaatsen. Geen beschikbare schepen meer.");
+            }
+        } catch (NullPointerException e) {
+            System.out.println("Kan schip niet plaatsen. Geen beschikbare schepen meer.");
+            e.printStackTrace();
+        }
+    }
+
+    private boolean canPlaceShip(ShipType shipType, int x, int y, boolean horizontal) {
+        int length = shipType.getLength();
+
+        if (horizontal) {
+            for (int i = x; i < x + length; i++) {
+                if (!isValidPoint(i, y) || getCell(i, y).ship != null)
+                    return false;
+
+                for (Cell neighbor : getNeighbors(i, y)) {
+                    if (!isValidPoint((int) neighbor.getX(), (int) neighbor.getY()) || neighbor.ship != null)
+                        return false;
+                }
+            }
+        } else {
+            for (int i = y; i < y + length; i++) {
+                if (!isValidPoint(x, i) || getCell(x, i).ship != null)
+                    return false;
+
+                for (Cell neighbor : getNeighbors(x, i)) {
+                    if (!isValidPoint((int) neighbor.getX(), (int) neighbor.getY()) || neighbor.ship != null)
+                        return false;
+                }
+            }
         }
 
-        for (int i = x; i < x + shipType.getLength(); i++) {
-            Cell cell = getCell(i, y);
-            cell.setFill(Color.GREEN);
-            cell.ship = shipType;
-            updateNeighboringCells(cell, Color.RED); // Update de omliggende cellen met rode rand
-        }
-
-        shipType.decrementAvailable();
-        updateChoiceBox();
         return true;
     }
 
-    private boolean canPlaceShip(ShipType shipType, int startX, int startY) {
-        if (startX + shipType.getLength() > NUM_COLS) return false;
+    private ShipType getNextAvailableShipType() {
+        for (ShipType shipType : ShipType.values()) {
+            if (shipType.getAvailable() > 0) {
+                return shipType;
+            }
+        }
+        return null; // Geen beschikbare shiptypes meer
+    }
 
-        for (int x = startX; x < startX + shipType.getLength(); x++) {
-            if (!isValidPlacement(x, startY)) return false;
+    private Cell[] getNeighbors(int x, int y) {
+        Point2D[] points = new Point2D[]{
+                new Point2D(x - 1, y),
+                new Point2D(x + 1, y),
+                new Point2D(x, y - 1),
+                new Point2D(x, y + 1)
+        };
+
+        List<Cell> neighbors = new ArrayList<>();
+
+        for (Point2D p : points) {
+            if (isValidPoint(p)) {
+                neighbors.add(getCell((int) p.getX(), (int) p.getY()));
+            }
         }
 
-        return true;
+        return neighbors.toArray(new Cell[0]);
     }
 
-    private boolean isValidPlacement(int x, int y) {
-        if (x < 0 || x >= NUM_COLS || y < 0 || y >= NUM_ROWS) return false;
-        Cell cell = getCell(x, y);
-        return cell.ship == null;
-    }
-
-    public Cell getCell(int x, int y) {
+    private Cell getCell(int x, int y) {
         for (Node node : grid.getChildren()) {
             if (GridPane.getColumnIndex(node) == x && GridPane.getRowIndex(node) == y && node instanceof Cell) {
                 return (Cell) node;
             }
         }
         return null;
+    }
+
+    private boolean isValidPoint(int x, int y) {
+        return x >= 0 && x < NUM_COLS && y >= 0 && y < NUM_ROWS;
+    }
+
+    private boolean isValidPoint(Point2D point) {
+        return isValidPoint((int) point.getX(), (int) point.getY());
     }
 
     private void updateChoiceBox() {
@@ -94,20 +187,6 @@ public class Gridview {
         shipTypeChoiceBox.setValue(updatedShipTypes.isEmpty() ? null : updatedShipTypes.get(0));
     }
 
-    private void updateNeighboringCells(Cell cell, Color color) {
-        int x = cell.x;
-        int y = cell.y;
-
-        for (int i = x - 1; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
-                if (isValidPlacement(i, j)) {
-                    Cell neighboringCell = getCell(i, j);
-                    neighboringCell.setStroke(color);
-                }
-            }
-        }
-    }
-
     public class Cell extends Rectangle {
         public int x, y;
         public ShipType ship = null;
@@ -118,34 +197,19 @@ public class Gridview {
             this.x = x;
             this.y = y;
 
-            setOnMouseClicked(event -> {
-                ShipType selectedShipType = shipTypeChoiceBox.getValue();
-                if (selectedShipType != null && selectedShipType.getAvailable() > 0) {
-                    boolean placed = gridview.placeShip(selectedShipType, x, y);
-                    if (placed) {
-                        System.out.println("Schip geplaatst: " + selectedShipType + " op (" + x + ", " + y + ")");
-                    } else {
-                        System.out.println("Kan schip niet plaatsen op (" + x + ", " + y + ")");
-                    }
-                }
-            });
-
-            // Voeg een eventlistener toe om de stijl van de cel bij te werken wanneer de muis erover beweegt
             setOnMouseEntered(event -> {
                 if (ship == null) {
-                    updateCellStyle(Color.RED); // Rode rand rond de cel
+                    updateCellStyle(Color.RED);
                 }
             });
 
-            // Voeg een eventlistener toe om de celstijl te resetten wanneer de muis eruit beweegt
             setOnMouseExited(event -> {
                 if (ship == null) {
-                    updateCellStyle(Color.LIGHTGRAY); // Standaard kleur van de cel
+                    updateCellStyle(Color.LIGHTGRAY);
                 }
             });
         }
 
-        // Methode om de stijl van de cel bij te werken
         private void updateCellStyle(Color color) {
             setFill(color);
             setStroke(color.equals(Color.RED) ? Color.RED : Color.BLACK);
