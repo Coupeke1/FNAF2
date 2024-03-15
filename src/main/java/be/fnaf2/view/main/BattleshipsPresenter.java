@@ -13,23 +13,12 @@
 
     public class BattleshipsPresenter {
         private final BattleshipsView view;
-        private final Stage primaryStage;
 
-        public BattleshipsPresenter(BattleshipsView view, Stage primaryStage) {
+        public BattleshipsPresenter(BattleshipsView view ) {
             this.view = view;
-            this.primaryStage = primaryStage;
             initialize();
         }
 
-        public static void showBattleshipsView(Stage primaryStage) {
-            BattleshipsView battleshipsView = new BattleshipsView(primaryStage);
-
-            BattleshipsPresenter battleshipsPresenter = new BattleshipsPresenter(battleshipsView, primaryStage);
-
-            primaryStage.setTitle("Battleships");
-            primaryStage.setScene(new Scene(battleshipsView, 800, 600)); // Set the scene directly here
-            primaryStage.show();
-        }
 
         private void initialize() {
             // Set event handlers
@@ -64,27 +53,14 @@
 
             alert.showAndWait().ifPresent(response -> {
                 if (gameMode.equalsIgnoreCase("settings")) {
-                    showSettingsView();
+                   // showSettingsView();
                 } else {
                     if (response == ButtonType.OK) {
-                        showGridPlacementView();
+                     //   showGridPlacementView();
                     }
                 }
             });
         }
 
-        private void showGridPlacementView() {
-            // Assuming you have a GridModel instance, you need to create a Gridview instance.
-            GridModel gridModel = new GridModel(); // Replace this with your actual GridModel instantiation.
-            Gridview gridview = new Gridview();
 
-            // Create a GridPresenter instance with the GridModel and Gridview instances.
-            GridPresenter gridPresenter = new GridPresenter(gridModel, gridview);
-
-            // Call the showGridView method from the GridPresenter.
-            gridPresenter.showGridView(primaryStage);        }
-
-        private void showSettingsView() {
-            SettingsPresenter.showSettingsView(primaryStage);
-        }
     }

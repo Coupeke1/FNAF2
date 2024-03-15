@@ -2,17 +2,20 @@ package be.fnaf2.view.Splash;
 
 // SplashPresenter.java
 
+import be.fnaf2.view.gridplacement.Gridview;
 import be.fnaf2.view.main.BattleshipsPresenter;
+import be.fnaf2.view.main.BattleshipsView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class SplashPresenter {
-    private final Stage splashStage;
+    private final SplashView splashView;
 
-    public SplashPresenter(Stage splashStage, Duration splashDuration) {
-        this.splashStage = splashStage;
+    public SplashPresenter(SplashView view, Duration splashDuration) {
+        this.splashView = view;
+        splashDuration.toSeconds();
         addEventHandler(splashDuration);
     }
 
@@ -20,10 +23,9 @@ public class SplashPresenter {
         // Close the splash screen after the specified duration
         Timeline timeline = new Timeline(
                 new KeyFrame(splashDuration, event -> {
-
-                    Stage primaryStage = new Stage();
-                    BattleshipsPresenter.showBattleshipsView(primaryStage);
-                    splashStage.close();
+                    BattleshipsView view = new BattleshipsView();
+                    BattleshipsPresenter presenter = new BattleshipsPresenter(view);
+                    splashView.getScene().setRoot(view);
 
                 })
         );

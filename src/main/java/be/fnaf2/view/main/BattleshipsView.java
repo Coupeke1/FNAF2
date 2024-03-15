@@ -15,10 +15,8 @@ public class BattleshipsView extends GridPane {
     private Button singleplayerButton;
     private Button multiplayerButton;
     private Button settingButton;
-    private Stage primaryStage;
 
-    public BattleshipsView(Stage primaryStage) {
-        this.primaryStage = primaryStage;
+    public BattleshipsView() {
         initializeView();
     }
 
