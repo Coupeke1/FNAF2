@@ -40,6 +40,12 @@
                 } else {
                     throw new ButtonInitializationException("Settings Button Error");
                 }
+               if (view.getRulesButton() != null) {
+                   view.getRulesButton().setOnAction(event -> showConfirmationAlert("Rules"));
+               } else {
+                   throw new ButtonInitializationException("Settings Button Error");
+               }
+
             } catch (ButtonInitializationException e) {
                 e.printStackTrace();
             }
