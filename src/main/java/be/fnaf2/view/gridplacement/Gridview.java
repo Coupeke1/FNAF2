@@ -89,7 +89,6 @@ public class Gridview {
                 shipType.decrementAvailable();
                 updateChoiceBox();
 
-                // Kies automatisch een ander shiptype als het huidige niet meer beschikbaar is
                 ShipType nextShipType = getNextAvailableShipType();
                 if (nextShipType != null) {
                     shipTypeChoiceBox.setValue(nextShipType);
@@ -137,7 +136,7 @@ public class Gridview {
                 return shipType;
             }
         }
-        return null; // Geen beschikbare shiptypes meer
+        return null;
     }
 
     private Cell[] getNeighbors(int x, int y) {

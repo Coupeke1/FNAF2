@@ -1,5 +1,5 @@
 // SettingsView.java
-package be.fnaf2.settings;
+package be.fnaf2.view.settings;
 
 import javafx.scene.layout.GridPane;
 

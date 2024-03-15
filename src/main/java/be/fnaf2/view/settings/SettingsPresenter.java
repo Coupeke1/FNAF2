@@ -1,8 +1,7 @@
 // SettingsPresenter.java
-package be.fnaf2.settings;
+package be.fnaf2.view.settings;
 
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class SettingsPresenter {
