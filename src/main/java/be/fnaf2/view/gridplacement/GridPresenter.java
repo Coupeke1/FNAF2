@@ -13,7 +13,5 @@ public class GridPresenter {
         this.gridview = gridview;
     }
 
-    public void showGridView(Stage primaryStage) {
-        gridview.showGrid(primaryStage);
-    }
+
 }
