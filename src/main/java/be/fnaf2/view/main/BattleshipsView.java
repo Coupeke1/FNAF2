@@ -15,8 +15,11 @@ public class BattleshipsView extends GridPane {
     private Button singleplayerButton;
     private Button multiplayerButton;
     private Button settingButton;
+    private Button rulesButton;
+    private Stage primaryStage;
 
     public BattleshipsView() {
+        this.primaryStage = primaryStage;
         initializeView();
     }
 
@@ -29,6 +32,7 @@ public class BattleshipsView extends GridPane {
         singleplayerButton = new Button("Singleplayer");
         multiplayerButton = new Button("Multiplayer");
         settingButton = new Button();
+        rulesButton = new Button("rules");
         settingButton.setGraphic(settingImageView);
         settingButton.setPrefSize(30, 30);
         settingButton.setStyle("-fx-background-color: grey;");
@@ -36,6 +40,7 @@ public class BattleshipsView extends GridPane {
         singleplayerButton.setStyle("-fx-border-color: red;");
         multiplayerButton.setStyle("-fx-border-color: blue;");
         settingButton.setStyle("-fx-border-color: green;");
+        rulesButton.setStyle("-fx-border-color: green");
         singleplayerButton.setMinWidth(Button.USE_PREF_SIZE);
         multiplayerButton.setMinWidth(Button.USE_PREF_SIZE);
 
@@ -52,6 +57,7 @@ public class BattleshipsView extends GridPane {
         this.add(new Region(), 1, 1);
 
         this.add(settingButton, 1, 1);
+        this.add(rulesButton, 0, 1);
 
         Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/BattleshipsLogo.jpg")));
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, false, false);
@@ -70,4 +76,5 @@ public class BattleshipsView extends GridPane {
     public Button getSettingButton() {
         return settingButton;
     }
+    public Button getRulesButton() {return rulesButton;}
 }
