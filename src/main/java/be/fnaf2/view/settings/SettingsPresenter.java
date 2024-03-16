@@ -10,10 +10,7 @@ public class SettingsPresenter {
 
     public SettingsPresenter(SettingsView view) {
         this.view = view;
-        initialize();
     }
 
-    private void initialize() {
-        // Set event handlers or other settings-related logic
-    }
+
 }
