@@ -75,4 +75,6 @@ public class BattleshipsView extends GridPane {
         return settingButton;
     }
     public Button getRulesButton() {return rulesButton;}
+
+
 }

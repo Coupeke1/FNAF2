@@ -3,6 +3,8 @@ package be.fnaf2.view.main;
 
 import be.fnaf2.Exceptions.ButtonInitializationException;
 import be.fnaf2.model.GridModel;
+import be.fnaf2.view.rules.RulesPresenter;
+import be.fnaf2.view.rules.RulesView;
 import be.fnaf2.view.settings.SettingsPresenter;
 import be.fnaf2.view.gridplacement.GridPresenter;
 import be.fnaf2.view.gridplacement.Gridview;
@@ -28,11 +30,18 @@ public class BattleshipsPresenter {
         setButtonAction(view.getSingleplayerButton(), "Singleplayer");
         setButtonAction(view.getMultiplayerButton(), "Multiplayer");
         setButtonAction(view.getSettingButton(), "Settings");
+        setButtonAction(view.getRulesButton(), "rules");
     }
 
     private void setButtonAction(Button button, String gameMode) {
         if (button != null) {
-            button.setOnAction(event -> showConfirmationAlert(gameMode));
+            button.setOnAction(event -> {
+                if (gameMode.equalsIgnoreCase("rules")) {
+                    switchToRulesView(); // Schakel over naar de RulesView als de Rules-knop wordt ingedrukt
+                } else {
+                    showConfirmationAlert(gameMode);
+                }
+            });
         } else {
             throw new ButtonInitializationException(gameMode + " Button Error");
         }
@@ -57,6 +66,11 @@ public class BattleshipsPresenter {
         SettingsView settingsView = new SettingsView();
         new SettingsPresenter(settingsView);
         view.getScene().setRoot(settingsView);
+    }
+    private void switchToRulesView(){
+        RulesView rulesView = new RulesView();
+        new RulesPresenter(rulesView);
+        view.getScene().setRoot(rulesView);
     }
 
     private void switchToGameView() {
