@@ -56,8 +56,10 @@ public class BattleshipsPresenter {
         alert.showAndWait().ifPresent(response -> {
             if (gameMode.equalsIgnoreCase("settings")) {
                 switchToSettingsView();
-            } else if (response == ButtonType.OK) {
-                switchToGameView();
+            } else if (gameMode.equalsIgnoreCase("multiplayer")) {
+                switchToMultiPlayerView();
+            }else if (gameMode.equalsIgnoreCase("singleplayer")) {
+                switchToSinglePlayerView();
             }
         });
     }
@@ -73,15 +75,54 @@ public class BattleshipsPresenter {
         view.getScene().setRoot(rulesView);
     }
 
-    private void switchToGameView() {
+    private void switchToSinglePlayerView() {
         Stage stage = (Stage) view.getScene().getWindow();
         Gridview gridview = new Gridview(stage);
         new GridPresenter(new GridModel(), gridview);
-        HBox hbox = new HBox(gridview.getShipTypeChoiceBox(), gridview.getClearButton(), gridview.getUndoButton());
+        HBox hbox = new HBox(gridview.getShipTypeChoiceBox(), gridview.getClearButton(), gridview.getUndoButton(),gridview.getNextButton());
         hbox.setSpacing(10);
         // To add some space between the buttons
         VBox vbox = new VBox(hbox, gridview);
         vbox.setSpacing(5);// VBox to arrange the buttons and the Gridview vertically
         stage.setScene(new Scene(vbox));
+    }
+    private void switchToMultiPlayerView() {
+        Stage stage = (Stage) view.getScene().getWindow();
+        Gridview gridviewP1 = new Gridview(stage);
+        Gridview gridviewP2 = new Gridview(stage);
+        new GridPresenter(new GridModel(), gridviewP1);
+        HBox hboxP1 = new HBox(gridviewP1.getShipTypeChoiceBox(), gridviewP1.getClearButton(), gridviewP1.getUndoButton(),gridviewP1.getNextButton());
+        hboxP1.setSpacing(10);
+        VBox vboxP1 = new VBox(hboxP1, gridviewP1);
+        vboxP1.setSpacing(5);
+
+        new GridPresenter(new GridModel(), gridviewP2);
+        HBox hboxP2 = new HBox(gridviewP2.getShipTypeChoiceBox(), gridviewP2.getClearButton(), gridviewP2.getUndoButton(),gridviewP2.getNextButton());
+        hboxP2.setSpacing(10);
+        VBox vboxP2 = new VBox(hboxP2, gridviewP2);
+        vboxP2.setSpacing(5);
+        vboxP2.setVisible(false); // Initially, the Gridview for Player2 is not visible
+
+        // In BattleshipsPresenter.java
+        gridviewP1.getNextButton().setOnAction(event -> {
+            GridPresenter presenterP1 = new GridPresenter(new GridModel(), gridviewP1);
+            if (presenterP1.allShipsPlaced()) {
+                vboxP1.setVisible(false);
+                vboxP2.setVisible(true);
+                stage.show(); // Update the view
+            } else {
+                // Toon een bericht dat niet alle schepen zijn geplaatst
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Warning");
+                alert.setHeaderText("Not all ships are placed");
+                alert.setContentText("Please place all ships before proceeding to the next player.");
+
+                alert.showAndWait();
+            }
+        });
+
+        VBox vbox = new VBox(vboxP1, vboxP2);
+        stage.setScene(new Scene(vbox));
+        stage.show();
     }
 }

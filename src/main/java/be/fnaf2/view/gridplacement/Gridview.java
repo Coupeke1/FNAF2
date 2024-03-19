@@ -1,10 +1,15 @@
 package be.fnaf2.view.gridplacement;
 
+import be.fnaf2.model.GridModel;
+import be.fnaf2.model.HoofdgameModel;
+import be.fnaf2.view.hoofdgame.HoofdgameView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
@@ -15,18 +20,21 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Stack;
 
 public class Gridview extends GridPane {
 
-    private static final int NUM_ROWS = 10;
-    private static final int NUM_COLS = 10;
+    protected static final int NUM_ROWS = 10;
+    protected static final int NUM_COLS = 10;
     private static final int CELL_SIZE = 50;
     private boolean enemy = false;
     private ChoiceBox<ShipType> shipTypeChoiceBox;
     private Button undoButton;
     private Button clearButton;
+    private Button nextButton;
     private Stack<Ship> placedShips = new Stack<>();
+
 
     public Gridview(Stage stage) {
         for (int row = 0; row < NUM_ROWS; row++) {
@@ -35,6 +43,7 @@ public class Gridview extends GridPane {
                 this.add(cell, col, row);
             }
         }
+
         showGrid(stage);
     }
 
@@ -50,6 +59,9 @@ public class Gridview extends GridPane {
         clearButton.setMinSize(100, 20);
         clearButton.setOnAction(event -> clearGrid());
 
+        nextButton = new Button("Continue");
+        nextButton.setMinSize(100, 20);
+        nextButton.setOnAction(event -> showGame(stage));
         VBox vbox = new VBox(15, shipTypeChoiceBox, undoButton, clearButton, this);
         vbox.setMinSize(NUM_COLS * CELL_SIZE, (NUM_ROWS + 4) * CELL_SIZE); // Increase the size of the VBox
         Scene scene = new Scene(vbox, NUM_COLS * CELL_SIZE, (NUM_ROWS + 4) * CELL_SIZE); // Increase the size of the Scene
@@ -66,11 +78,70 @@ public class Gridview extends GridPane {
             }
         });
 
+        Button startGameButton = new Button("Start Game");
+        startGameButton.setMinSize(100, 20);
+        startGameButton.setOnAction(event -> {
+            GridPresenter presenter = new GridPresenter(new GridModel(), this);
+            if (presenter.allShipsPlaced()) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog");
+                alert.setHeaderText("Start Game Confirmation");
+                alert.setContentText("Do you want to go to HoofdGameView?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    // Navigate to HoofdgameView
+                    HoofdgameModel model = new HoofdgameModel();
+                    EnemyGrid enemyGrid = new EnemyGrid(stage);
+                    HoofdgameView view = new HoofdgameView(model, this, enemyGrid);
+                    Scene scenes = new Scene(view, 800, 600);
+                    stage.setScene(scenes);
+                    stage.show();
+                } else {
+                    // ... user chose CANCEL or closed the dialog
+                }
+            } else {
+                throw new IllegalStateException("All ships must be placed before starting the game.");
+            }
+        });
+
         stage.setScene(scene);
         stage.show();
     }
 
-    private void placeShip(ShipType shipType, int x, int y, boolean horizontal) {
+
+    private void showGame(Stage stage) {
+        try {
+            GridPresenter presenter = new GridPresenter(new GridModel(), this);
+            if (presenter.allShipsPlaced()) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Confirmation Dialog");
+                alert.setHeaderText("Start Game Confirmation");
+                alert.setContentText("Do you want to go to HoofdGameView?");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.OK) {
+                    // Navigate to HoofdgameView
+                    HoofdgameModel model = new HoofdgameModel();
+                    EnemyGrid enemyGrid = new EnemyGrid(stage); // Create an EnemyGrid instance
+                    HoofdgameView view = new HoofdgameView(model, this, enemyGrid); // Pass 'this' Gridview instance and the EnemyGrid instance
+                    Scene scene = new Scene(view, 800, 600);
+
+                    stage.setScene(scene);
+                } else {
+                    throw new IllegalStateException("All ships must be placed before starting the game.");
+                }
+            } else {
+                throw new IllegalStateException("All ships must be placed before starting the game.");
+            }
+        } catch (IllegalStateException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+
+    void placeShip(ShipType shipType, int x, int y, boolean horizontal) {
         try {
             if (canPlaceShip(shipType, x, y, horizontal)) {
                 int length = shipType.getLength();
@@ -114,11 +185,11 @@ public class Gridview extends GridPane {
             }
         } catch (NullPointerException e) {
             System.out.println("Kan schip niet plaatsen. Geen beschikbare schepen meer.");
-            e.printStackTrace();
+
         }
     }
 
-    private boolean canPlaceShip(ShipType shipType, int x, int y, boolean horizontal) {
+    boolean canPlaceShip(ShipType shipType, int x, int y, boolean horizontal) {
         int length = shipType.getLength();
 
         if (horizontal) {
@@ -154,6 +225,7 @@ public class Gridview extends GridPane {
         }
         return null;
     }
+
 
     private Cell[] getNeighbors(int x, int y) {
         Point2D[] points = new Point2D[]{
@@ -214,6 +286,10 @@ public class Gridview extends GridPane {
         return clearButton;
     }
 
+    public Button getNextButton() {
+        return nextButton;
+    }
+
     private void undoLastShip() {
         if (!placedShips.isEmpty()) {
             Ship lastPlacedShip = placedShips.pop();
@@ -240,6 +316,7 @@ public class Gridview extends GridPane {
             shipType.resetAvailable();
         }
     }
+
 
     public class Ship {
         private ShipType shipType;

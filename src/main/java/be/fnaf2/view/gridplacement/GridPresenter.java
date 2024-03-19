@@ -5,7 +5,6 @@ import javafx.stage.Stage;
 
 public class GridPresenter {
     private final GridModel gridModel;
-
     private final Gridview gridview;
 
     public GridPresenter(GridModel gridModel, Gridview gridview) {
@@ -13,5 +12,12 @@ public class GridPresenter {
         this.gridview = gridview;
     }
 
-
+    public boolean allShipsPlaced() {
+        for (ShipType shipType : ShipType.values()) {
+            if (shipType.getAvailable() > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
