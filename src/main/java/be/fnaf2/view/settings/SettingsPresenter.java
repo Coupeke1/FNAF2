@@ -1,6 +1,7 @@
 // SettingsPresenter.java
 package be.fnaf2.view.settings;
 
+import be.fnaf2.Exceptions.ButtonInitializationException;
 import be.fnaf2.view.main.BattleshipsPresenter;
 import be.fnaf2.view.main.BattleshipsView;
 import javafx.event.ActionEvent;
@@ -20,7 +21,11 @@ public class SettingsPresenter {
             @Override
             public void handle(ActionEvent event) {
                 // Roep de methode aan om terug te keren naar het hoofdscherm
-                switchToBattleshipsView();
+                try {
+                    switchToBattleshipsView();
+                } catch (ButtonInitializationException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -32,6 +37,10 @@ public class SettingsPresenter {
         BattleshipsPresenter battleshipsPresenter = new BattleshipsPresenter(battleshipsView);
 
         // Verander de root van het huidige scene naar het hoofdscherm
-        view.getScene().setRoot(battleshipsView);
+        if (view.getScene() != null) {
+            view.getScene().setRoot(battleshipsView);
+        } else {
+            throw new ButtonInitializationException("Return button not initizalized");
+        }
     }
 }

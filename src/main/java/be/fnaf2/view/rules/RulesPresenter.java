@@ -1,5 +1,6 @@
 package be.fnaf2.view.rules;
 
+import be.fnaf2.Exceptions.ButtonInitializationException;
 import be.fnaf2.view.main.BattleshipsPresenter;
 import be.fnaf2.view.main.BattleshipsView;
 import be.fnaf2.view.rules.RulesView;
@@ -21,18 +22,26 @@ public class RulesPresenter {
             @Override
             public void handle(ActionEvent event) {
                 // Roep de methode aan om terug te keren naar het hoofdscherm
-                switchToBattleshipsView();
+                try {
+                    switchToBattleshipsView();
+                } catch (ButtonInitializationException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
-        private void switchToBattleshipsView() {
-            // Maak een nieuw hoofdscherm aan
-            BattleshipsView battleshipsView = new BattleshipsView();
-            BattleshipsPresenter battleshipsPresenter = new BattleshipsPresenter(battleshipsView);
+    private void switchToBattleshipsView() throws ButtonInitializationException {
+        // Maak een nieuw hoofdscherm aan
+        BattleshipsView battleshipsView = new BattleshipsView();
+        BattleshipsPresenter battleshipsPresenter = new BattleshipsPresenter(battleshipsView);
 
-            // Verander de root van het huidige scene naar het hoofdscherm
+        // Verander de root van het huidige scene naar het hoofdscherm
+        if (view.getScene() != null) {
             view.getScene().setRoot(battleshipsView);
+        } else {
+            throw new ButtonInitializationException("Return button not initizalized");
         }
     }
+}
 
