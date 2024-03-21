@@ -2,6 +2,7 @@ package be.fnaf2.view.main;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -57,9 +58,9 @@ public class BattleshipsView extends GridPane {
         this.add(settingButton, 1, 1);
         this.add(rulesButton, 0, 1);
 
-        Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/BattleshipsLogo.jpg")));
-        BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, false, false);
-        BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, backgroundSize);
+        Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/battleships.jpg")));
+        BackgroundSize backgroundSize = new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false);
+        BackgroundImage background = new BackgroundImage(backgroundImage, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         this.setBackground(new Background(background));
     }
 

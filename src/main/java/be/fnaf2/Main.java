@@ -18,7 +18,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         SplashView splashView = new SplashView();
-        SplashPresenter presenter = new SplashPresenter(splashView, new Duration(800));
+        SplashPresenter presenter = new SplashPresenter(splashView, new Duration(2000));
         primaryStage.setScene(new Scene(splashView));
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);

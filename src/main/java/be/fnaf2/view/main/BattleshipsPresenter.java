@@ -113,12 +113,12 @@ public class BattleshipsPresenter {
         gridviewP2 = new Gridview(stage);
         GridPresenter presenterP1 = new GridPresenter(new GridModel(), gridviewP1);
         GridPresenter presenterP2 = new GridPresenter(new GridModel(), gridviewP2);
-        HBox hboxP1 = new HBox(gridviewP1.getShipTypeChoiceBox(), gridviewP1.getClearButton(), gridviewP1.getUndoButton(), gridviewP1.getNextButton());
+        HBox hboxP1 = new HBox(gridviewP1.getShipTypeChoiceBox(), gridviewP1.getClearButton(), gridviewP1.getUndoButton(), gridviewP1.getNextButton(), gridviewP1.getGoBackButton());
         hboxP1.setSpacing(10);
         VBox vboxP1 = new VBox(hboxP1, gridviewP1);
         vboxP1.setSpacing(5);
 
-        HBox hboxP2 = new HBox(gridviewP2.getShipTypeChoiceBox(), gridviewP2.getClearButton(), gridviewP2.getUndoButton(), gridviewP2.getNextButton());
+        HBox hboxP2 = new HBox(gridviewP2.getShipTypeChoiceBox(), gridviewP2.getClearButton(), gridviewP2.getUndoButton(), gridviewP2.getNextButton(), gridviewP2.getGoBackButton());
         hboxP2.setSpacing(10);
         VBox vboxP2 = new VBox(hboxP2, gridviewP2);
         vboxP2.setSpacing(5);
@@ -160,4 +160,13 @@ public class BattleshipsPresenter {
                 stage.show();
             }
         });
-    }}
+    }
+    public void goBackToBattleshipsView() {
+        Stage stage = (Stage) view.getScene().getWindow();
+        BattleshipsView battleshipsView = new BattleshipsView();
+        BattleshipsPresenter battleshipsPresenter = new BattleshipsPresenter(battleshipsView);
+        stage.setScene(new Scene(battleshipsView));
+        stage.show();
+    }
+}
+
