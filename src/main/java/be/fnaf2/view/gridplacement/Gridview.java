@@ -2,10 +2,12 @@ package be.fnaf2.view.gridplacement;
 
 import be.fnaf2.model.GridModel;
 import be.fnaf2.model.HoofdgameModel;
+import be.fnaf2.view.hoofdgame.HoofdgamePresenter;
 import be.fnaf2.view.hoofdgame.HoofdgameView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -34,9 +36,12 @@ public class Gridview extends GridPane {
     private Button clearButton;
     private Button nextButton;
     private Stack<Ship> placedShips = new Stack<>();
+    private HoofdgameView hoofdgameView;
 
 
-    public Gridview(Stage stage) {
+
+    public Gridview(Stage stage, HoofdgameView hoofdgameView) {
+        this.hoofdgameView = hoofdgameView;
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
                 Cell cell = new Cell(col, row);
@@ -81,6 +86,23 @@ public class Gridview extends GridPane {
         stage.setScene(scene);
         stage.show();
     }
+    public void hideSpecialColors() {
+        for (Node node : this.getChildren()) {
+            if (node instanceof Cell) {
+                ((Cell) node).hideSpecialColors();
+            }
+        }
+    }
+    public void enableShooting(HoofdgamePresenter presenter) {
+        for (Node node : this.getChildren()) {
+            if (node instanceof Cell) {
+                node.setOnMouseClicked(event -> {
+                    Cell clickedCell = (Cell) node;
+                    presenter.handleShot(clickedCell.x, clickedCell.y);
+                });
+            }
+        }
+    }
 
 
     private void showGame(Stage stage) {
@@ -95,7 +117,8 @@ public class Gridview extends GridPane {
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.OK) {
                     // Navigate to HoofdgameView
-                    HoofdgameModel model = new HoofdgameModel();
+                    HoofdgamePresenter hoofdgamePresenter = hoofdgameView.getPresenter(); // Get the presenter from hoofdgameView
+                    HoofdgameModel model = new HoofdgameModel(hoofdgamePresenter); // Pass the presenter to the constructor
                     HoofdgameView view = new HoofdgameView(this, this);
                     stage.setScene(getScene()); // Fixed line
                 } else {
@@ -108,7 +131,6 @@ public class Gridview extends GridPane {
             System.out.println(e.getMessage());
         }
     }
-
 
 
     void placeShip(ShipType shipType, int x, int y, boolean horizontal) {
@@ -125,7 +147,7 @@ public class Gridview extends GridPane {
                         shipCells.add(cell);
                         if (!enemy) {
                             cell.setFill(Color.WHITE);
-                            cell.setStroke(Color.GREEN);
+                            cell.setStroke(Color.RED);
                         }
                     }
                 } else {
@@ -136,7 +158,7 @@ public class Gridview extends GridPane {
                         shipCells.add(cell);
                         if (!enemy) {
                             cell.setFill(Color.WHITE);
-                            cell.setStroke(Color.GREEN);
+                            cell.setStroke(Color.RED);
                         }
                     }
                 }
@@ -158,6 +180,7 @@ public class Gridview extends GridPane {
 
         }
     }
+
 
     boolean canPlaceShip(ShipType shipType, int x, int y, boolean horizontal) {
         int length = shipType.getLength();
@@ -195,6 +218,11 @@ public class Gridview extends GridPane {
         }
         return null;
     }
+    private void handleShot(int x, int y) {
+        HoofdgamePresenter presenter = hoofdgameView.getPresenter();
+        presenter.handleShot(x, y);
+        presenter.switchPlayer(); // Switch turn after handling the shot
+    }
 
 
     private Cell[] getNeighbors(int x, int y) {
@@ -216,7 +244,8 @@ public class Gridview extends GridPane {
         return neighbors.toArray(new Cell[0]);
     }
 
-    private Cell getCell(int x, int y) {
+
+    public Cell getCell(int x, int y) {
         for (javafx.scene.Node node : this.getChildren()) {
             if (GridPane.getColumnIndex(node) == x && GridPane.getRowIndex(node) == y && node instanceof Cell) {
                 return (Cell) node;
@@ -224,6 +253,7 @@ public class Gridview extends GridPane {
         }
         return null;
     }
+
 
     private boolean isValidPoint(int x, int y) {
         return x >= 0 && x < NUM_COLS && y >= 0 && y < NUM_ROWS;
@@ -311,7 +341,7 @@ public class Gridview extends GridPane {
         public ShipType ship = null;
 
         public Cell(int x, int y) {
-            super(CELL_SIZE, CELL_SIZE, Color.LIGHTGRAY);
+            super(CELL_SIZE, CELL_SIZE, Color.LIGHTBLUE);
             setStroke(Color.BLACK);
             this.x = x;
             this.y = y;
@@ -324,7 +354,7 @@ public class Gridview extends GridPane {
 
             setOnMouseExited(event -> {
                 if (ship == null) {
-                    updateCellStyle(Color.LIGHTGRAY);
+                    updateCellStyle(Color.LIGHTBLUE);
                 }
             });
         }
@@ -333,5 +363,11 @@ public class Gridview extends GridPane {
             setFill(color);
             setStroke(color.equals(Color.RED) ? Color.RED : Color.BLACK);
         }
+
+        public void hideSpecialColors() {
+            setFill(Color.LIGHTGRAY);
+            setStroke(Color.BLACK);
+        }
+
     }
 }
