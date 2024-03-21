@@ -1,9 +1,8 @@
 package be.fnaf2.view.gridplacement;
+
 import be.fnaf2.model.GridModel;
 import be.fnaf2.model.HoofdgameModel;
 import be.fnaf2.view.hoofdgame.HoofdgameView;
-import be.fnaf2.view.main.BattleshipsPresenter;
-import be.fnaf2.view.main.BattleshipsView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
@@ -32,10 +31,8 @@ public class Gridview extends GridPane {
     private boolean enemy = false;
     private ChoiceBox<ShipType> shipTypeChoiceBox;
     private Button undoButton;
-    private Button goBackButton;
     private Button clearButton;
     private Button nextButton;
-    private BattleshipsPresenter battleshipsPresenter;
     private Stack<Ship> placedShips = new Stack<>();
 
 
@@ -54,13 +51,6 @@ public class Gridview extends GridPane {
         shipTypeChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(ShipType.values()));
         shipTypeChoiceBox.setValue(ShipType.SUBMARINE);
 
-        goBackButton = new Button("Go back");
-        goBackButton.setMinSize(100, 20);
-        goBackButton.setOnAction(event -> {
-            battleshipsPresenter.goBackToBattleshipsView();
-        });
-
-
         undoButton = new Button("Undo");
         undoButton.setMinSize(100, 20);
         undoButton.setOnAction(event -> undoLastShip());
@@ -71,8 +61,8 @@ public class Gridview extends GridPane {
 
         nextButton = new Button("Continue");
         nextButton.setMinSize(100, 20);
-        nextButton.setOnAction(event -> showGame(stage));
-        VBox vbox = new VBox(15, shipTypeChoiceBox, undoButton, clearButton, goBackButton, this);
+        // Removed the automatic transition to HoofdGameview
+        VBox vbox = new VBox(15, shipTypeChoiceBox, undoButton, clearButton, this);
         vbox.setMinSize(NUM_COLS * CELL_SIZE, (NUM_ROWS + 4) * CELL_SIZE); // Increase the size of the VBox
         Scene scene = new Scene(vbox, NUM_COLS * CELL_SIZE, (NUM_ROWS + 4) * CELL_SIZE); // Increase the size of the Scene
 
@@ -88,38 +78,9 @@ public class Gridview extends GridPane {
             }
         });
 
-        Button startGameButton = new Button("Start Game");
-        startGameButton.setMinSize(100, 20);
-        startGameButton.setOnAction(event -> {
-            GridPresenter presenter = new GridPresenter(new GridModel(), this);
-            if (presenter.allShipsPlaced()) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation Dialog");
-                alert.setHeaderText("Start Game Confirmation");
-                alert.setContentText("Do you want to go to HoofdGameView?");
-
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.OK) {
-                    // Navigate to HoofdgameView
-                    HoofdgameModel model = new HoofdgameModel();
-                    EnemyGrid enemyGrid = new EnemyGrid(stage);
-                    HoofdgameView view = new HoofdgameView(this, enemyGrid);
-                    Scene scenes = new Scene(view, 800, 600);
-                    stage.setScene(scenes);
-                    stage.show();
-                } else {
-                    // ... user chose CANCEL or closed the dialog
-                }
-            } else {
-                throw new IllegalStateException("All ships must be placed before starting the game.");
-            }
-        });
-
         stage.setScene(scene);
         stage.show();
     }
-
-
 
 
     private void showGame(Stage stage) {
@@ -135,11 +96,8 @@ public class Gridview extends GridPane {
                 if (result.get() == ButtonType.OK) {
                     // Navigate to HoofdgameView
                     HoofdgameModel model = new HoofdgameModel();
-                    EnemyGrid enemyGrid = new EnemyGrid(stage); // Create an EnemyGrid instance
-                    HoofdgameView view = new HoofdgameView( this, enemyGrid); // Pass 'this' Gridview instance and the EnemyGrid instance
-                    Scene scene = new Scene(view, 800, 600);
-
-                    stage.setScene(scene);
+                    HoofdgameView view = new HoofdgameView(this, this);
+                    stage.setScene(getScene()); // Fixed line
                 } else {
                     throw new IllegalStateException("All ships must be placed before starting the game.");
                 }
@@ -294,17 +252,12 @@ public class Gridview extends GridPane {
         return undoButton;
     }
 
-
     public Button getClearButton() {
         return clearButton;
     }
 
     public Button getNextButton() {
         return nextButton;
-    }
-
-    public Button getGoBackButton() {
-        return goBackButton;
     }
 
     private void undoLastShip() {
@@ -333,7 +286,6 @@ public class Gridview extends GridPane {
             shipType.resetAvailable();
         }
     }
-
 
 
     public class Ship {
