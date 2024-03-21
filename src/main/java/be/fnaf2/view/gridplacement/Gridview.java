@@ -93,7 +93,7 @@ public class Gridview extends GridPane {
                     // Navigate to HoofdgameView
                     HoofdgameModel model = new HoofdgameModel();
                     EnemyGrid enemyGrid = new EnemyGrid(stage);
-                    HoofdgameView view = new HoofdgameView(model, this, enemyGrid);
+                    HoofdgameView view = new HoofdgameView(this, enemyGrid);
                     Scene scenes = new Scene(view, 800, 600);
                     stage.setScene(scenes);
                     stage.show();
@@ -124,7 +124,7 @@ public class Gridview extends GridPane {
                     // Navigate to HoofdgameView
                     HoofdgameModel model = new HoofdgameModel();
                     EnemyGrid enemyGrid = new EnemyGrid(stage); // Create an EnemyGrid instance
-                    HoofdgameView view = new HoofdgameView(model, this, enemyGrid); // Pass 'this' Gridview instance and the EnemyGrid instance
+                    HoofdgameView view = new HoofdgameView( this, enemyGrid); // Pass 'this' Gridview instance and the EnemyGrid instance
                     Scene scene = new Scene(view, 800, 600);
 
                     stage.setScene(scene);

@@ -4,12 +4,15 @@ package be.fnaf2.view.main;
 import be.fnaf2.Exceptions.ButtonActionException;
 import be.fnaf2.Exceptions.ButtonInitializationException;
 import be.fnaf2.model.GridModel;
+import be.fnaf2.view.hoofdgame.HoofdgamePresenter;
+import be.fnaf2.view.hoofdgame.HoofdgameView;
 import be.fnaf2.view.rules.RulesPresenter;
 import be.fnaf2.view.rules.RulesView;
 import be.fnaf2.view.settings.SettingsPresenter;
 import be.fnaf2.view.gridplacement.GridPresenter;
 import be.fnaf2.view.gridplacement.Gridview;
 import be.fnaf2.view.settings.SettingsView;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -21,6 +24,8 @@ import javafx.stage.Stage;
 
 public class BattleshipsPresenter {
     private final BattleshipsView view;
+    private Gridview gridviewP1;
+    private Gridview gridviewP2;
 
     public BattleshipsPresenter(BattleshipsView view) {
         this.view = view;
@@ -96,6 +101,7 @@ public class BattleshipsPresenter {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
+
                 stage.setScene(new Scene(vbox));
             }
         });
@@ -103,27 +109,36 @@ public class BattleshipsPresenter {
 
     private void switchToMultiPlayerView() {
         Stage stage = (Stage) view.getScene().getWindow();
-        Gridview gridviewP1 = new Gridview(stage);
-        Gridview gridviewP2 = new Gridview(stage);
-        new GridPresenter(new GridModel(), gridviewP1);
+        gridviewP1 = new Gridview(stage);
+        gridviewP2 = new Gridview(stage);
+        GridPresenter presenterP1 = new GridPresenter(new GridModel(), gridviewP1);
+        GridPresenter presenterP2 = new GridPresenter(new GridModel(), gridviewP2);
         HBox hboxP1 = new HBox(gridviewP1.getShipTypeChoiceBox(), gridviewP1.getClearButton(), gridviewP1.getUndoButton(), gridviewP1.getNextButton());
         hboxP1.setSpacing(10);
         VBox vboxP1 = new VBox(hboxP1, gridviewP1);
         vboxP1.setSpacing(5);
 
-        new GridPresenter(new GridModel(), gridviewP2);
         HBox hboxP2 = new HBox(gridviewP2.getShipTypeChoiceBox(), gridviewP2.getClearButton(), gridviewP2.getUndoButton(), gridviewP2.getNextButton());
         hboxP2.setSpacing(10);
         VBox vboxP2 = new VBox(hboxP2, gridviewP2);
         vboxP2.setSpacing(5);
         vboxP2.setVisible(false);
 
+        HBox hbox = new HBox(vboxP1, vboxP2);
+        hbox.setAlignment(Pos.CENTER); // Set initial alignment to center
+
         gridviewP1.getNextButton().setOnAction(event -> {
-            GridPresenter presenterP1 = new GridPresenter(new GridModel(), gridviewP1);
-            if (presenterP1.allShipsPlaced()) {
+            if (presenterP1.allShipsPlaced() && !vboxP2.isVisible()) {
                 vboxP1.setVisible(false);
                 vboxP2.setVisible(true);
-                stage.show();
+                presenterP2.resetShips(); // Reset the ships for the second player
+                hbox.setAlignment(Pos.CENTER_LEFT); // Align to left when first VBox is hidden
+            } else if (presenterP2.allShipsPlaced() && vboxP2.isVisible()) {
+                // When both players have placed all their ships:
+                HoofdgameView hoofdGameView = new HoofdgameView(gridviewP1, gridviewP2);
+                // Switch to the HoofdGameView
+                // This depends on your application structure
+                stage.setScene(new Scene(hoofdGameView));
             } else {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
                 alert.setTitle("Warning");
@@ -141,10 +156,8 @@ public class BattleshipsPresenter {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
-                VBox vbox = new VBox(vboxP1, vboxP2);
-                stage.setScene(new Scene(vbox));
+                stage.setScene(new Scene(hbox, 2000, 800)); // Adjust the width and height as needed
                 stage.show();
             }
         });
-    }
-}
+    }}
