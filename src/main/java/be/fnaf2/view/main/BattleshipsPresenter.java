@@ -16,10 +16,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Optional;
 
 
@@ -63,17 +71,35 @@ public class BattleshipsPresenter {
                 switchToSettingsView();
                 break;
             case "multiplayer":
-                switchToMultiPlayerView();
-                break;
             case "singleplayer":
-                switchToSinglePlayerView();
+                TextInputDialog dialog = new TextInputDialog();
+                dialog.setTitle("Username Input");
+                dialog.setHeaderText("Enter your username:");
+                Optional<String> result = dialog.showAndWait();
+                result.ifPresent(username -> {
+                    try {
+                        Path path = Paths.get("src/main/resources/Highscores/");
+                        if (!Files.exists(path)) {
+                            Files.createDirectories(path);
+                        }
+                        try (PrintWriter writer = new PrintWriter(new FileWriter(path + "/" + username + ".csv", true))) {
+                            String currentDate = LocalDate.now().toString();
+                            writer.println(username + "," + currentDate);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                if (gameMode.equalsIgnoreCase("multiplayer")) {
+                    switchToMultiPlayerView();
+                } else {
+                    switchToSinglePlayerView();
+                }
                 break;
             default:
                 throw new ButtonActionException("Unsupported game mode: " + gameMode);
         }
-    }
-
-    private void switchToSettingsView() {
+    }private void switchToSettingsView() {
         SettingsView settingsView = new SettingsView();
         new SettingsPresenter(settingsView);
         view.getScene().setRoot(settingsView);
@@ -105,17 +131,23 @@ public class BattleshipsPresenter {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
-            // Gridview for player 1
-            Gridview gridviewP1 = new Gridview(stage);
+            // Initialize Gridview for player 1
+            gridviewP1 = new Gridview(stage, null);
             GridPresenter presenterP1 = new GridPresenter(new GridModel(), gridviewP1);
+
+            // Initialize Gridview for player 2
+            gridviewP2 = new Gridview(stage, null);
+            GridPresenter presenterP2 = new GridPresenter(new GridModel(), gridviewP2);
+
+            // Now that gridviewP1 and gridviewP2 are initialized, create HoofdgameView
+
+            // Create UI components for player 1
             HBox hboxP1 = new HBox(gridviewP1.getShipTypeChoiceBox(), gridviewP1.getClearButton(), gridviewP1.getUndoButton(), gridviewP1.getNextButton());
             hboxP1.setSpacing(10);
             VBox vboxP1 = new VBox(hboxP1, gridviewP1);
             vboxP1.setSpacing(5);
 
-            // Gridview for player 2
-            Gridview gridviewP2 = new Gridview(stage);
-            GridPresenter presenterP2 = new GridPresenter(new GridModel(), gridviewP2);
+            // Create UI components for player 2
             HBox hboxP2 = new HBox(gridviewP2.getShipTypeChoiceBox(), gridviewP2.getClearButton(), gridviewP2.getUndoButton(), gridviewP2.getNextButton());
             hboxP2.setSpacing(10);
             VBox vboxP2 = new VBox(hboxP2, gridviewP2);
@@ -129,18 +161,14 @@ public class BattleshipsPresenter {
             // Action for the "Next" button of player 1
             gridviewP1.getNextButton().setOnAction(event -> {
                 if (presenterP1.allShipsPlaced() && !vboxP2.isVisible()) {
-                    // Hide the VBox of player 1 and show that of player 2
-                    vboxP1.setVisible(false);
                     vboxP2.setVisible(true);
-                    presenterP2.resetShips(); // Reset the ships for player 2
-                    hbox.setAlignment(Pos.CENTER_LEFT); // Align to left when first VBox is hidden
+                    presenterP1.resetShips();
+                    vboxP1.setVisible(false);
                 } else if (presenterP2.allShipsPlaced() && vboxP2.isVisible()) {
-                    // When both players have placed all their ships
-                    HoofdgameView hoofdGameView = new HoofdgameView(gridviewP1, gridviewP2); // Call the showGame method
-                    stage.setScene(new Scene(hoofdGameView));
+                    HoofdgameView hoofdgameView = new HoofdgameView(gridviewP1, gridviewP2);
+                    stage.setScene(new Scene(hoofdgameView));
                     stage.show();
                 } else {
-                    // Warn if not all ships are placed
                     Alert mpalert = new Alert(Alert.AlertType.WARNING);
                     mpalert.setTitle("Warning");
                     mpalert.setHeaderText("Not all ships are placed");
@@ -153,12 +181,10 @@ public class BattleshipsPresenter {
             // Action for the "Next" button of player 2
             gridviewP2.getNextButton().setOnAction(event -> {
                 if (presenterP2.allShipsPlaced()) {
-                    // When player 2 has placed all their ships
-                    HoofdgameView hoofdGameView = new HoofdgameView(gridviewP1, gridviewP2); // Call the showGame method
-                    stage.setScene(new Scene(hoofdGameView));
+                    HoofdgameView hoofdgameView = new HoofdgameView(gridviewP1, gridviewP2);
+                    stage.setScene(new Scene(hoofdgameView));
                     stage.show();
                 } else {
-                    // Warn if not all ships are placed
                     Alert mpalert = new Alert(Alert.AlertType.WARNING);
                     mpalert.setTitle("Warning");
                     mpalert.setHeaderText("Not all ships are placed");
@@ -172,5 +198,4 @@ public class BattleshipsPresenter {
             stage.setScene(new Scene(hbox, 2000, 800)); // Adjust the width and height if necessary
             stage.show();
         }
-    }
-}
+    }}

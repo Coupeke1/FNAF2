@@ -27,9 +27,10 @@ import java.util.Stack;
 
 public class Gridview extends GridPane {
 
-    protected static final int NUM_ROWS = 10;
-    protected static final int NUM_COLS = 10;
+    protected static int NUM_ROWS = 10;
+    protected static int NUM_COLS = 10;
     private static final int CELL_SIZE = 50;
+    private static int NUM_SHIPS = 5;
     private boolean enemy = false;
     private ChoiceBox<ShipType> shipTypeChoiceBox;
     private Button undoButton;
@@ -42,6 +43,7 @@ public class Gridview extends GridPane {
 
 
     public Gridview(Stage stage, HoofdgameView hoofdgameView) {
+
         this.hoofdgameView = hoofdgameView;
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
@@ -95,6 +97,20 @@ public class Gridview extends GridPane {
             }
         }
     }
+    public static void setNumRows(int numRows) {
+        NUM_ROWS = numRows;
+        // Update grid layout if necessary
+    }
+
+    public static void setNumCols(int numCols) {
+        NUM_COLS = numCols;
+        // Update grid layout if necessary
+    }
+
+    public static void setNumShips(int numShips) {
+        NUM_SHIPS = numShips;
+        // Update number of ships if necessary
+    }
     public void enableShooting(HoofdgamePresenter presenter) {
         for (Node node : this.getChildren()) {
             if (node instanceof Cell) {
@@ -105,36 +121,6 @@ public class Gridview extends GridPane {
             }
         }
     }
-
-
-
-    private void showGame(Stage stage) {
-        try {
-            GridPresenter presenter = new GridPresenter(new GridModel(), this);
-            if (presenter.allShipsPlaced()) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setTitle("Confirmation Dialog");
-                alert.setHeaderText("Start Game Confirmation");
-                alert.setContentText("Do you want to go to HoofdGameView?");
-
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.OK) {
-                    // Navigate to HoofdgameView
-                    HoofdgamePresenter hoofdgamePresenter = hoofdgameView.getPresenter(); // Get the presenter from hoofdgameView
-                    HoofdgameModel model = new HoofdgameModel(hoofdgamePresenter); // Pass the presenter to the constructor
-                    HoofdgameView view = new HoofdgameView(this, this);
-                    stage.setScene(getScene()); // Fixed line
-                } else {
-                    throw new IllegalStateException("All ships must be placed before starting the game.");
-                }
-            } else {
-                throw new IllegalStateException("All ships must be placed before starting the game.");
-            }
-        } catch (IllegalStateException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
 
     void placeShip(ShipType shipType, int x, int y, boolean horizontal) {
         try {
@@ -187,9 +173,6 @@ public class Gridview extends GridPane {
         return enemy;
     }
 
-    public void setEnemy(boolean enemy) {
-        this.enemy = enemy;
-    }
 
     public void switchPlayer() {
         hoofdgameView.getPresenter().switchPlayer();
@@ -232,18 +215,7 @@ public class Gridview extends GridPane {
     public void disableShipPlacement() {
         // Implement the logic to disable ship placement
     }
-    public Ship getShip(ShipType shipType) {
-        for (Ship ship : placedShips) {
-            if (ship.getShipType() == shipType) {
-                return ship;
-            }
-        }
-        return null;
-    }
 
-    public void decrementShips() {
-        ships--;
-    }
 
 
     private ShipType getNextAvailableShipType() {
