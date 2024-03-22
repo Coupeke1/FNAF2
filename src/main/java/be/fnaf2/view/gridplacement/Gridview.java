@@ -37,20 +37,22 @@ public class Gridview extends GridPane {
     private Button nextButton;
     private Stack<Ship> placedShips = new Stack<>();
     private HoofdgameView hoofdgameView;
-
+    private boolean wasShot = false;
+    private int ships = 0; // Add this line
 
 
     public Gridview(Stage stage, HoofdgameView hoofdgameView) {
         this.hoofdgameView = hoofdgameView;
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
-                Cell cell = new Cell(col, row);
+                Cell cell = new Cell(col, row, this);
                 this.add(cell, col, row);
             }
         }
 
         showGrid(stage);
     }
+
 
     public void showGrid(Stage stage) {
         shipTypeChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(ShipType.values()));
@@ -174,13 +176,26 @@ public class Gridview extends GridPane {
                     shipTypeChoiceBox.setValue(nextShipType);
                 }
             } else {
-                System.out.println("Kan schip niet plaatsen. ligt naast een ander ship.");
+                System.out.println("Kan schip niet plaatsen. ligt naast een ander schip.");
             }
         } catch (NullPointerException e) {
             System.out.println("Kan schip niet plaatsen. Geen beschikbare schepen meer.");
 
         }
     }
+    public boolean isEnemy() {
+        return enemy;
+    }
+
+    public void setEnemy(boolean enemy) {
+        this.enemy = enemy;
+    }
+
+    public void switchPlayer() {
+        hoofdgameView.getPresenter().switchPlayer();
+    }
+
+
 
 
     boolean canPlaceShip(ShipType shipType, int x, int y, boolean horizontal) {
@@ -210,6 +225,26 @@ public class Gridview extends GridPane {
 
         return true;
     }
+    public void enableShipPlacement(HoofdgamePresenter presenter) {
+        // Implement the logic to enable ship placement
+    }
+
+    public void disableShipPlacement() {
+        // Implement the logic to disable ship placement
+    }
+    public Ship getShip(ShipType shipType) {
+        for (Ship ship : placedShips) {
+            if (ship.getShipType() == shipType) {
+                return ship;
+            }
+        }
+        return null;
+    }
+
+    public void decrementShips() {
+        ships--;
+    }
+
 
     private ShipType getNextAvailableShipType() {
         for (ShipType shipType : ShipType.values()) {
@@ -248,6 +283,7 @@ public class Gridview extends GridPane {
     }
 
 
+
     public Cell getCell(int x, int y) {
         for (javafx.scene.Node node : this.getChildren()) {
             if (GridPane.getColumnIndex(node) == x && GridPane.getRowIndex(node) == y && node instanceof Cell) {
@@ -256,6 +292,7 @@ public class Gridview extends GridPane {
         }
         return null;
     }
+
 
 
     private boolean isValidPoint(int x, int y) {
@@ -324,10 +361,12 @@ public class Gridview extends GridPane {
     public class Ship {
         private ShipType shipType;
         private List<Cell> cells;
+        private int health;
 
         public Ship(ShipType shipType, List<Cell> cells) {
             this.shipType = shipType;
             this.cells = cells;
+            this.health = shipType.getLength();
         }
 
         public ShipType getShipType() {
@@ -337,17 +376,28 @@ public class Gridview extends GridPane {
         public List<Cell> getCells() {
             return cells;
         }
+
+        public void hit() {
+            health--;
+        }
+
+        public boolean isAlive() {
+            return health > 0;
+        }
     }
 
     public class Cell extends Rectangle {
         public int x, y;
         public ShipType ship = null;
+        private Gridview board;
+        public Ship ships;
 
-        public Cell(int x, int y) {
+        public Cell(int x, int y, Gridview board) {
             super(CELL_SIZE, CELL_SIZE, Color.LIGHTBLUE);
             setStroke(Color.BLACK);
             this.x = x;
             this.y = y;
+            this.board = board;
 
             setOnMouseEntered(event -> {
                 if (ship == null) {
@@ -360,6 +410,40 @@ public class Gridview extends GridPane {
                     updateCellStyle(Color.LIGHTBLUE);
                 }
             });
+
+            setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && board.isEnemy()) {
+                    handleShot();
+                }
+            });
+        }
+
+        private void handleShot() {
+            if (!wasShot) {
+                boolean hit = shoot();
+                if (hit) {
+                    board.handleShot(x, y);
+                } else {
+                    setFill(Color.BLUE); // Change color to indicate a miss
+                    board.switchPlayer();
+                }
+            }
+        }
+
+        public boolean shoot() {
+            wasShot = true;
+            setFill(Color.BLACK);
+
+            if (ship != null) {
+                ships.hit();
+                setFill(Color.RED);
+                if (!ships.isAlive()) {
+                    board.ships--;
+                }
+                return true;
+            }
+
+            return false;
         }
 
         private void updateCellStyle(Color color) {

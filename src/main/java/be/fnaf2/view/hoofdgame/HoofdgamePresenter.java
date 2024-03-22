@@ -16,12 +16,18 @@ public class HoofdgamePresenter {
         // Initialize your view here, if needed
     }
 
+    // In HoofdgamePresenter.java
     public void handleShot(int x, int y) {
-        // Handle the shot at the given location
-        // If the location is not valid, do nothing
+        if (!model.isShootingPhase()) {
+            return;
+        }
         if (model.isValidPoint(x, y)) {
             model.updateCell(x, y);
         }
+    }
+
+    public void startShootingPhase() {
+        // Implement the logic to start the shooting phase
     }
 
     public void switchPlayer() {

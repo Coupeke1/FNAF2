@@ -37,5 +37,4 @@ public enum ShipType {
     public void incrementAvailable() {
         this.available++;
     }
-
 }

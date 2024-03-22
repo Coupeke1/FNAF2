@@ -24,6 +24,13 @@ public class HoofdgameView extends HBox {
 
     private void initializePresenter() {
         presenter = new HoofdgamePresenter(new HoofdgameModel(presenter), this);
+        player1Grid.enableShipPlacement(presenter);
+    }
+
+    public void startShootingPhase() {
+        player1Grid.disableShipPlacement();
+        player2Grid.enableShooting(presenter);
+        presenter.startShootingPhase();
     }
 
     private void disableShipPlacement() {
