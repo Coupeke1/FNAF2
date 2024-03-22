@@ -102,7 +102,8 @@ public class BattleshipsPresenter {
             default:
                 throw new ButtonActionException("Unsupported game mode: " + gameMode);
         }
-    }private void switchToSettingsView() {
+    }
+    private void switchToSettingsView() {
         SettingsView settingsView = new SettingsView();
         new SettingsPresenter(settingsView);
         view.getScene().setRoot(settingsView);
@@ -135,11 +136,11 @@ public class BattleshipsPresenter {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Initialize Gridview for player 1
-            gridviewP1 = new Gridview(stage, null);
+            gridviewP1 = new Gridview(stage);
             GridPresenter presenterP1 = new GridPresenter(new GridModel(), gridviewP1);
 
             // Initialize Gridview for player 2
-            gridviewP2 = new Gridview(stage, null);
+            gridviewP2 = new Gridview(stage);
             GridPresenter presenterP2 = new GridPresenter(new GridModel(), gridviewP2);
 
             // Create UI components for player 1
@@ -196,7 +197,7 @@ public class BattleshipsPresenter {
             });
 
             // Show player 1's grid
-            stage.setScene(new Scene(hbox, 2000, 800)); // Adjust the width and height if necessary
+            stage.setScene(new Scene(hbox, 600, 800)); // Adjust the width and height if necessary
             stage.show();
         }
     }

@@ -40,9 +40,8 @@ public class Gridview extends GridPane {
     private int ships = 0; // Add this line
 
 
-    public Gridview(Stage stage, HoofdgameView hoofdgameView) {
+    public Gridview(Stage stage) {
 
-        this.hoofdgameView = hoofdgameView;
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
                 Cell cell = new Cell(col, row, this);
