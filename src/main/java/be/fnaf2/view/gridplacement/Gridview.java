@@ -1,7 +1,6 @@
 package be.fnaf2.view.gridplacement;
 
-import be.fnaf2.model.GridModel;
-import be.fnaf2.model.HoofdgameModel;
+
 import be.fnaf2.view.hoofdgame.HoofdgamePresenter;
 import be.fnaf2.view.hoofdgame.HoofdgameView;
 import javafx.collections.FXCollections;
@@ -9,9 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
@@ -19,10 +16,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
 
 public class Gridview extends GridPane {
@@ -31,13 +26,13 @@ public class Gridview extends GridPane {
     protected static int NUM_COLS = 10;
     private static final int CELL_SIZE = 50;
     private static int NUM_SHIPS = 5;
-    private boolean enemy = false;
+    private final boolean enemy = false;
     private ChoiceBox<ShipType> shipTypeChoiceBox;
     private Button undoButton;
     private Button clearButton;
     private Button nextButton;
-    private Stack<Ship> placedShips = new Stack<>();
-    private HoofdgameView hoofdgameView;
+    private final Stack<Ship> placedShips = new Stack<>();
+    private final HoofdgameView hoofdgameView;
     private boolean wasShot = false;
     private int ships = 0; // Add this line
 
@@ -331,8 +326,8 @@ public class Gridview extends GridPane {
 
 
     public class Ship {
-        private ShipType shipType;
-        private List<Cell> cells;
+        private final ShipType shipType;
+        private final List<Cell> cells;
         private int health;
 
         public Ship(ShipType shipType, List<Cell> cells) {
@@ -361,7 +356,7 @@ public class Gridview extends GridPane {
     public class Cell extends Rectangle {
         public int x, y;
         public ShipType ship = null;
-        private Gridview board;
+        private final Gridview board;
         public Ship ships;
 
         public Cell(int x, int y, Gridview board) {
