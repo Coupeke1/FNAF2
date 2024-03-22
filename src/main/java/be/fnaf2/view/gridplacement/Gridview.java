@@ -1,17 +1,16 @@
 package be.fnaf2.view.gridplacement;
 
-import be.fnaf2.model.GridModel;
-import be.fnaf2.model.HoofdgameModel;
+import be.fnaf2.Exceptions.ButtonInitializationException;
 import be.fnaf2.view.hoofdgame.HoofdgamePresenter;
 import be.fnaf2.view.hoofdgame.HoofdgameView;
+import be.fnaf2.view.main.BattleshipsPresenter;
+import be.fnaf2.view.main.BattleshipsView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
@@ -22,7 +21,6 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Stack;
 
 public class Gridview extends GridPane {
@@ -68,6 +66,7 @@ public class Gridview extends GridPane {
         clearButton.setMinSize(100, 20);
         clearButton.setOnAction(event -> clearGrid());
 
+
         nextButton = new Button("Continue");
         nextButton.setMinSize(100, 20);
         // Removed the automatic transition to HoofdGameview
@@ -90,6 +89,18 @@ public class Gridview extends GridPane {
         stage.setScene(scene);
         stage.show();
     }
+
+    private void goBack() {
+        BattleshipsView battleshipsView = new BattleshipsView();
+        BattleshipsPresenter battleshipsPresenter = new BattleshipsPresenter(battleshipsView);
+        // Verander de root van het huidige scene naar het hoofdscherm
+        if (this.getScene() != null) {
+        this.getScene().setRoot(battleshipsView);
+        } else {
+            throw new ButtonInitializationException("Return button not initizalized");
+        }
+    }
+
     public void hideSpecialColors() {
         for (Node node : this.getChildren()) {
             if (node instanceof Cell) {
@@ -302,12 +313,13 @@ public class Gridview extends GridPane {
         return nextButton;
     }
 
+
     private void undoLastShip() {
         if (!placedShips.isEmpty()) {
             Ship lastPlacedShip = placedShips.pop();
             for (Cell cell : lastPlacedShip.getCells()) {
                 cell.ship = null;
-                cell.setFill(Color.LIGHTGRAY);
+                cell.setFill(Color.LIGHTBLUE);
                 cell.setStroke(Color.BLACK);
             }
             lastPlacedShip.getShipType().incrementAvailable();

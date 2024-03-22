@@ -3,6 +3,8 @@ package be.fnaf2.view.main;
 import be.fnaf2.Exceptions.ButtonActionException;
 import be.fnaf2.Exceptions.ButtonInitializationException;
 import be.fnaf2.model.GridModel;
+import be.fnaf2.view.Splash.SplashPresenter;
+import be.fnaf2.view.Splash.SplashView;
 import be.fnaf2.view.battleship.BattleshipMain;
 import be.fnaf2.view.gridplacement.GridPresenter;
 import be.fnaf2.view.gridplacement.Gridview;
@@ -20,6 +22,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -130,7 +133,7 @@ public class BattleshipsPresenter {
         alert.setContentText("Are you sure you want to start a multiplayer game?");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             // Initialize Gridview for player 1
             gridviewP1 = new Gridview(stage, null);
             GridPresenter presenterP1 = new GridPresenter(new GridModel(), gridviewP1);
@@ -138,8 +141,6 @@ public class BattleshipsPresenter {
             // Initialize Gridview for player 2
             gridviewP2 = new Gridview(stage, null);
             GridPresenter presenterP2 = new GridPresenter(new GridModel(), gridviewP2);
-
-            // Now that gridviewP1 and gridviewP2 are initialized, create HoofdgameView
 
             // Create UI components for player 1
             HBox hboxP1 = new HBox(gridviewP1.getShipTypeChoiceBox(), gridviewP1.getClearButton(), gridviewP1.getUndoButton(), gridviewP1.getNextButton());
@@ -198,4 +199,6 @@ public class BattleshipsPresenter {
             stage.setScene(new Scene(hbox, 2000, 800)); // Adjust the width and height if necessary
             stage.show();
         }
-    }}
+    }
+
+}
