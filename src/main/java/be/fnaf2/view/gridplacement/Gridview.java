@@ -105,6 +105,7 @@ public class Gridview extends GridPane {
     }
 
 
+
     private void showGame(Stage stage) {
         try {
             GridPresenter presenter = new GridPresenter(new GridModel(), this);
@@ -219,9 +220,11 @@ public class Gridview extends GridPane {
         return null;
     }
     private void handleShot(int x, int y) {
-        HoofdgamePresenter presenter = hoofdgameView.getPresenter();
-        presenter.handleShot(x, y);
-        presenter.switchPlayer(); // Switch turn after handling the shot
+        if (isValidPoint(x, y)) {
+            HoofdgamePresenter presenter = hoofdgameView.getPresenter();
+            presenter.handleShot(x, y);
+            presenter.switchPlayer(); // Switch turn after handling the shot
+        }
     }
 
 
@@ -365,9 +368,8 @@ public class Gridview extends GridPane {
         }
 
         public void hideSpecialColors() {
-            setFill(Color.LIGHTGRAY);
+            setFill(Color.LIGHTBLUE);
             setStroke(Color.BLACK);
         }
-
     }
 }
