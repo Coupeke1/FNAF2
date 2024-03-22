@@ -23,13 +23,13 @@ public class HoofdgameView extends HBox {
     }
 
     private void initializePresenter() {
-        HoofdgameModel model = new HoofdgameModel(presenter);
-        presenter = new HoofdgamePresenter(model, this);
+        presenter = new HoofdgamePresenter(new HoofdgameModel(presenter), this);
     }
 
     private void disableShipPlacement() {
-        player1Grid.setOnMouseClicked(null); // Disable mouse click events
-        player1Grid.setOnMouseDragged(null); // Disable mouse drag events
+        // Keep the mouse hover events
+        player1Grid.setOnMouseClicked(event -> {}); // Disable mouse click events
+        player1Grid.setOnMouseDragged(event -> {}); // Disable mouse drag events
     }
 
     public HoofdgamePresenter getPresenter() {
