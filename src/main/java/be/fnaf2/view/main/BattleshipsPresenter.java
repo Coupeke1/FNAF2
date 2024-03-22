@@ -82,9 +82,9 @@ public class BattleshipsPresenter {
                         if (!Files.exists(path)) {
                             Files.createDirectories(path);
                         }
-                        try (PrintWriter writer = new PrintWriter(new FileWriter(path + "/" + username + ".csv", true))) {
+                        try (PrintWriter writer = new PrintWriter(new FileWriter(path + "/highscores.csv", true))) {
                             String currentDate = LocalDate.now().toString();
-                            writer.println(username + "," + currentDate);
+                            writer.println("username: " + username + "\nDate: " + currentDate + "\n");
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
