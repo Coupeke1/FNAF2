@@ -3,7 +3,9 @@ package be.fnaf2.view.battleship;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -15,7 +17,9 @@ import java.util.List;
 public class Board extends Parent {
     private VBox rows = new VBox();
     private boolean enemy = false;
+    private Button button;
     public int ships = 5;
+    private BorderPane layout;
 
     public Board(boolean enemy, EventHandler<? super MouseEvent> handler) {
         this.enemy = enemy;
@@ -29,8 +33,7 @@ public class Board extends Parent {
 
             rows.getChildren().add(row);
         }
-
-        getChildren().add(rows);
+    this.getChildren().add(rows);
     }
 
     public boolean placeShip(Ship ship, int x, int y) {

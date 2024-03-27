@@ -1,3 +1,4 @@
+// In HoofdgameModel.java
 package be.fnaf2.model;
 
 import be.fnaf2.view.hoofdgame.HoofdgamePresenter;
@@ -9,7 +10,7 @@ public class HoofdgameModel {
     }
     private Grid grid;
     private boolean isPlayerOneTurn;
-    private HoofdgamePresenter presenter; // New field
+    private HoofdgamePresenter presenter;
 
     private GameState gameState;
 
@@ -38,5 +39,7 @@ public class HoofdgameModel {
     public void switchPlayer() {
         isPlayerOneTurn = !isPlayerOneTurn;
     }
-
+    public boolean checkCell(int x, int y) {
+        return grid.getCell(x, y).containsShip();
+    }
 }

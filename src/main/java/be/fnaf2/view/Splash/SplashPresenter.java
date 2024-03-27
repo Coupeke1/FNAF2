@@ -2,12 +2,10 @@ package be.fnaf2.view.Splash;
 
 // SplashPresenter.java
 
-import be.fnaf2.view.gridplacement.Gridview;
 import be.fnaf2.view.main.BattleshipsPresenter;
 import be.fnaf2.view.main.BattleshipsView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class SplashPresenter {

@@ -29,4 +29,8 @@ public class Cell {
         // Update the state of the cell
         this.isHit = true;
     }
+
+    public boolean containsShip() {
+        return hasShip;
+    }
 }

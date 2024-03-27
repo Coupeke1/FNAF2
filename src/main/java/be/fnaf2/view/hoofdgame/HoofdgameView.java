@@ -19,7 +19,6 @@ public class HoofdgameView extends HBox {
         initializePresenter();
         disableShipPlacement();
         player2Grid.hideSpecialColors();
-        player2Grid.enableShooting(presenter);
     }
 
     private void initializePresenter() {
@@ -27,23 +26,13 @@ public class HoofdgameView extends HBox {
         player1Grid.enableShipPlacement(presenter);
     }
 
-    public void startShootingPhase() {
-        player1Grid.disableShipPlacement();
-        player2Grid.enableShooting(presenter);
-        presenter.startShootingPhase();
-    }
 
-    private void disableShipPlacement() {
+    void disableShipPlacement() {
         // Keep the mouse hover events
         player1Grid.setOnMouseClicked(event -> {}); // Disable mouse click events
         player1Grid.setOnMouseDragged(event -> {}); // Disable mouse drag events
     }
 
-    public HoofdgamePresenter getPresenter() {
-        return presenter;
-    }
 
-    public Gridview getPlayer1Grid() {
-        return player1Grid;
-    }
+
 }

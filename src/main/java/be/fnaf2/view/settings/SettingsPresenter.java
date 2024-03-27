@@ -16,11 +16,11 @@ public class SettingsPresenter {
     }
 
     private void initialize() {
-        // Voeg een actie toe aan de terugknop
+        // add action to backbutton
         view.getBackButton().setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                // Roep de methode aan om terug te keren naar het hoofdscherm
+                // call the going back method
                 try {
                     switchToBattleshipsView();
                 } catch (ButtonInitializationException e) {
@@ -30,7 +30,7 @@ public class SettingsPresenter {
         });
     }
 
-    // Methode om terug te keren naar het hoofdscherm
+    // the go back method
     private void switchToBattleshipsView() {
         // Maak een nieuw hoofdscherm aan
         BattleshipsView battleshipsView = new BattleshipsView();

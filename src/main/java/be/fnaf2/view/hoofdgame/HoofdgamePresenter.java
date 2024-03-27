@@ -13,25 +13,7 @@ public class HoofdgamePresenter {
     }
 
     private void initView() {
-        // Initialize your view here, if needed
+
     }
 
-    // In HoofdgamePresenter.java
-    public void handleShot(int x, int y) {
-        if (!model.isShootingPhase()) {
-            return;
-        }
-        if (model.isValidPoint(x, y)) {
-            model.updateCell(x, y);
-        }
-    }
-
-    public void startShootingPhase() {
-        // Implement the logic to start the shooting phase
-    }
-
-    public void switchPlayer() {
-        model.switchPlayer();
-        // Update the view to reflect the current player's turn
-    }
 }

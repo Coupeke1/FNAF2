@@ -3,11 +3,8 @@ package be.fnaf2.view.rules;
 import be.fnaf2.Exceptions.ButtonInitializationException;
 import be.fnaf2.view.main.BattleshipsPresenter;
 import be.fnaf2.view.main.BattleshipsView;
-import be.fnaf2.view.rules.RulesView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 public class RulesPresenter {
         private final RulesView view;

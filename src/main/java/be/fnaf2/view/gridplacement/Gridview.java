@@ -1,10 +1,6 @@
 package be.fnaf2.view.gridplacement;
 
-import be.fnaf2.Exceptions.ButtonInitializationException;
 import be.fnaf2.view.hoofdgame.HoofdgamePresenter;
-import be.fnaf2.view.hoofdgame.HoofdgameView;
-import be.fnaf2.view.main.BattleshipsPresenter;
-import be.fnaf2.view.main.BattleshipsView;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
@@ -25,6 +21,8 @@ import java.util.Stack;
 
 public class Gridview extends GridPane {
 
+
+
     protected static int NUM_ROWS = 10;
     protected static int NUM_COLS = 10;
     private static final int CELL_SIZE = 50;
@@ -35,14 +33,9 @@ public class Gridview extends GridPane {
     private Button clearButton;
     private Button nextButton;
     private Stack<Ship> placedShips = new Stack<>();
-    private HoofdgameView hoofdgameView;
-    private boolean wasShot = false;
-    private int ships = 0; // Add this line
 
+    public Gridview(Stage stage) {
 
-    public Gridview(Stage stage, HoofdgameView hoofdgameView) {
-
-        this.hoofdgameView = hoofdgameView;
         for (int row = 0; row < NUM_ROWS; row++) {
             for (int col = 0; col < NUM_COLS; col++) {
                 Cell cell = new Cell(col, row, this);
@@ -69,7 +62,6 @@ public class Gridview extends GridPane {
 
         nextButton = new Button("Continue");
         nextButton.setMinSize(100, 20);
-        // Removed the automatic transition to HoofdGameview
         VBox vbox = new VBox(15, shipTypeChoiceBox, undoButton, clearButton, this);
         vbox.setMinSize(NUM_COLS * CELL_SIZE, (NUM_ROWS + 4) * CELL_SIZE); // Increase the size of the VBox
         Scene scene = new Scene(vbox, NUM_COLS * CELL_SIZE, (NUM_ROWS + 4) * CELL_SIZE); // Increase the size of the Scene
@@ -90,16 +82,6 @@ public class Gridview extends GridPane {
         stage.show();
     }
 
-    private void goBack() {
-        BattleshipsView battleshipsView = new BattleshipsView();
-        BattleshipsPresenter battleshipsPresenter = new BattleshipsPresenter(battleshipsView);
-        // Verander de root van het huidige scene naar het hoofdscherm
-        if (this.getScene() != null) {
-        this.getScene().setRoot(battleshipsView);
-        } else {
-            throw new ButtonInitializationException("Return button not initizalized");
-        }
-    }
 
     public void hideSpecialColors() {
         for (Node node : this.getChildren()) {
@@ -122,16 +104,7 @@ public class Gridview extends GridPane {
         NUM_SHIPS = numShips;
         // Update number of ships if necessary
     }
-    public void enableShooting(HoofdgamePresenter presenter) {
-        for (Node node : this.getChildren()) {
-            if (node instanceof Cell) {
-                node.setOnMouseClicked(event -> {
-                    Cell clickedCell = (Cell) node;
-                    presenter.handleShot(clickedCell.x, clickedCell.y);
-                });
-            }
-        }
-    }
+
 
     void placeShip(ShipType shipType, int x, int y, boolean horizontal) {
         try {
@@ -180,14 +153,6 @@ public class Gridview extends GridPane {
 
         }
     }
-    public boolean isEnemy() {
-        return enemy;
-    }
-
-
-    public void switchPlayer() {
-        hoofdgameView.getPresenter().switchPlayer();
-    }
 
 
 
@@ -220,11 +185,7 @@ public class Gridview extends GridPane {
         return true;
     }
     public void enableShipPlacement(HoofdgamePresenter presenter) {
-        // Implement the logic to enable ship placement
-    }
-
-    public void disableShipPlacement() {
-        // Implement the logic to disable ship placement
+        // Implement the logic to  enable ship placement
     }
 
 
@@ -236,13 +197,6 @@ public class Gridview extends GridPane {
             }
         }
         return null;
-    }
-    private void handleShot(int x, int y) {
-        if (isValidPoint(x, y)) {
-            HoofdgamePresenter presenter = hoofdgameView.getPresenter();
-            presenter.handleShot(x, y);
-            presenter.switchPlayer(); // Switch turn after handling the shot
-        }
     }
 
 
@@ -327,6 +281,7 @@ public class Gridview extends GridPane {
         }
     }
 
+
     private void clearGrid() {
         while (!placedShips.isEmpty()) {
             undoLastShip();
@@ -340,6 +295,7 @@ public class Gridview extends GridPane {
             shipType.resetAvailable();
         }
     }
+
 
 
     public class Ship {
@@ -395,40 +351,12 @@ public class Gridview extends GridPane {
                 }
             });
 
-            setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.PRIMARY && board.isEnemy()) {
-                    handleShot();
-                }
-            });
         }
 
-        private void handleShot() {
-            if (!wasShot) {
-                boolean hit = shoot();
-                if (hit) {
-                    board.handleShot(x, y);
-                } else {
-                    setFill(Color.BLUE); // Change color to indicate a miss
-                    board.switchPlayer();
-                }
-            }
-        }
 
-        public boolean shoot() {
-            wasShot = true;
-            setFill(Color.BLACK);
 
-            if (ship != null) {
-                ships.hit();
-                setFill(Color.RED);
-                if (!ships.isAlive()) {
-                    board.ships--;
-                }
-                return true;
-            }
 
-            return false;
-        }
+
 
         private void updateCellStyle(Color color) {
             setFill(color);

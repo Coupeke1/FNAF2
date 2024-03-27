@@ -3,8 +3,6 @@ package be.fnaf2.view.main;
 import be.fnaf2.Exceptions.ButtonActionException;
 import be.fnaf2.Exceptions.ButtonInitializationException;
 import be.fnaf2.model.GridModel;
-import be.fnaf2.view.Splash.SplashPresenter;
-import be.fnaf2.view.Splash.SplashView;
 import be.fnaf2.view.battleship.BattleshipMain;
 import be.fnaf2.view.gridplacement.GridPresenter;
 import be.fnaf2.view.gridplacement.Gridview;
@@ -22,7 +20,6 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -55,7 +52,7 @@ public class BattleshipsPresenter {
         if (button != null) {
             button.setOnAction(event -> {
                 try {
-                    handleButtonAction(button, gameMode);
+                    handleButtonAction(gameMode);
                 } catch (ButtonActionException e) {
                     e.printStackTrace();
                 }
@@ -65,7 +62,7 @@ public class BattleshipsPresenter {
         }
     }
 
-    private void handleButtonAction(Button button, String gameMode) throws ButtonActionException {
+    private void handleButtonAction( String gameMode) throws ButtonActionException {
         switch (gameMode.toLowerCase()) {
             case "rules":
                 switchToRulesView();
@@ -135,11 +132,11 @@ public class BattleshipsPresenter {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Initialize Gridview for player 1
-            gridviewP1 = new Gridview(stage, null);
+            gridviewP1 = new Gridview(stage);
             GridPresenter presenterP1 = new GridPresenter(new GridModel(), gridviewP1);
 
             // Initialize Gridview for player 2
-            gridviewP2 = new Gridview(stage, null);
+            gridviewP2 = new Gridview(stage);
             GridPresenter presenterP2 = new GridPresenter(new GridModel(), gridviewP2);
 
             // Create UI components for player 1

@@ -6,7 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 import java.util.Random;
 
@@ -24,9 +23,7 @@ public class BattleshipMain extends Parent {
 
     public Parent createContent() {
         BorderPane root = new BorderPane();
-        root.setPrefSize(600, 800);
-
-        root.setRight(new Text("RIGHT SIDEBAR - CONTROLS"));
+        root.setPrefSize(800, 1000);
 
         enemyBoard = new Board(true, event -> {
             if (!running)
