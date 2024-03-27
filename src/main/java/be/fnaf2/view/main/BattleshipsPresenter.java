@@ -99,7 +99,8 @@ public class BattleshipsPresenter {
             default:
                 throw new ButtonActionException("Unsupported game mode: " + gameMode);
         }
-    }private void switchToSettingsView() {
+    }
+    private void switchToSettingsView() {
         SettingsView settingsView = new SettingsView();
         new SettingsPresenter(settingsView);
         view.getScene().setRoot(settingsView);
@@ -193,7 +194,7 @@ public class BattleshipsPresenter {
             });
 
             // Show player 1's grid
-            stage.setScene(new Scene(hbox, 2000, 800)); // Adjust the width and height if necessary
+            stage.setScene(new Scene(hbox, 600, 800)); // Adjust the width and height if necessary
             stage.show();
         }
     }
